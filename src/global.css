@@ -1,0 +1,115 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-size: 16px;
+    font-family: 
+    -apple-system,
+    "Roboto",
+    "Helvetica Neue", 
+    "Arial",
+    "Noto Sans",
+    "Liberation Sans",
+    sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    background: #f4f4f4;
+    color: rgba(0, 0, 0, 0.89);
+}
+
+input[type=text],
+select {
+    background: #ffffff;
+    border: 1px solid #cfcfcf;
+    border-radius: 4px;
+}
+
+input[type=text] {
+    padding: 8px;
+}
+
+select {
+    padding: 6px;
+    cursor: pointer;
+}
+
+table {
+    border-collapse: separate; 
+    border-spacing: 0;
+}
+
+table th,
+table td {
+    padding: 6px 8px;
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+table th {
+    text-transform: uppercase;
+    font-size: 11px;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    background-color: rgba(0,0,0,0.025);
+}
+
+table th:first-child {
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px 0 0 4px;
+}
+
+table th:last-child {
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0 4px 4px 0;
+}
+
+table th:first-child,
+table td:first-child {
+    text-align: left;
+}
+
+table th:last-child,
+table td:last-child {
+    text-align: right;
+}
+
+table td {
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #262626;
+        color: rgba(255, 255, 255, 0.89);
+    }
+
+    input[type=text],
+    select {
+        border-color: rgba(255,255,255,.1);
+        background-color: #313131;
+        color: rgba(255, 255, 255, 0.89)
+    }
+    
+    table th {
+        color: rgba(255,255,255, .5);
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    table th:first-child {
+        border-left: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    table th:last-child {
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    table td {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        color: rgba(255,255,255,.8);
+    }
+}

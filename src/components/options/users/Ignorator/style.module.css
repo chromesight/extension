@@ -1,0 +1,14 @@
+.empty-row {
+    padding: 4px 0;
+    text-align: center;
+}
+
+.add-user-form {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+}
+
+.add-user-form input[type=text] {
+    flex-grow: 1;
+}
