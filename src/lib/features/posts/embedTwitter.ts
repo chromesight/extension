@@ -55,7 +55,6 @@ export default createFeature(
 
 		.twitter-tweet > * {
 			position: relative;
-			z-index: 2;
 		}
 
 		.twitter-tweet a {
@@ -74,11 +73,10 @@ export default createFeature(
 			color: #ffffff;
 		}
 
-		.twitter-tweet::after {
+		.twitter-tweet::before {
 			content: '';
 			position: absolute;
-			z-index: 1;
-			opacity: .25;
+			opacity: .1;
 			bottom: -5px;
 			right: 5px;
 			width: 80px;
