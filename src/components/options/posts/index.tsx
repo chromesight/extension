@@ -18,6 +18,7 @@ export default function PostsOptions() {
 	const [autoRedirect, setAutoRedirect] = useStorage<FeatureSettings>('autoRedirect', defaultSettings);
 	const [nwsTopicImages, setNwsTopicImages] = useStorage<FeatureSettings>('nwsTopicImages', defaultSettings);
 	const [embedTwitter, setEmbedTwitter] = useStorage<EmbedTwitterSettings>('embedTwitter', v => v === undefined ? { enabled: false, theme: 'dark' } : v);
+	const [markdownButtons, setMarkdownButtons] = useStorage<FeatureSettings>('markdownButtons', defaultSettings);
 
 	return (
 		<div className={style.group} id="posts">
@@ -110,6 +111,17 @@ export default function PostsOptions() {
 					<option value="dark">Dark</option>
 					<option value="light">Light</option>
 				</select>
+			</fieldset>
+
+			<fieldset className={style.fieldset}>
+				<div className={`${style.group} ${style.small}`}>
+					<p className={style.label}>Add markdown buttons</p>
+					<p className={style.description}>Adds markdown formatting buttons above the reply box</p>
+				</div>
+				<Switch
+					onChange={(checked: boolean) => setMarkdownButtons({ ...markdownButtons, enabled: checked })}
+					checked={markdownButtons.enabled}
+				/>
 			</fieldset>
 
 		</div>

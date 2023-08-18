@@ -6,6 +6,7 @@ import autoScroll from './autoScroll';
 import embedTwitter from './embedTwitter';
 import filterMe from './filterMe';
 import markTopicCreator from './markTopicCreator';
+import markdownButtons from './markdownButtons';
 import nwsTopicImages from './nwsTopicImages';
 import postNumbers from './postNumbers';
 
@@ -19,6 +20,7 @@ const features: Feature[] = [
 	autoRedirect,
 	filterMe,
 	embedTwitter,
+	markdownButtons,
 ];
 
 export default features;
