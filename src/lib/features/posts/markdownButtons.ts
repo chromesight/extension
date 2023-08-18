@@ -2,9 +2,9 @@ import logDebugMessage from '~lib/logs/debug';
 import createFeature from '../feature';
 import { CSS_PREFIX } from '~constants';
 
-let cursorPosition;
+let cursorPosition: number;
 
-// Insert formatted text at cursor position if textarea is focused, otherwise, append to the textarea
+// Either insert text at last known cursor position or append to end of textarea
 function insertText(text: string): void {
 	if (text) {
 		const textarea: HTMLElement = document.querySelector('#reply-content');
@@ -47,48 +47,53 @@ function createButton(text: string, cb: () => void): HTMLElement {
 	return button;
 }
 
+function createButtons(): HTMLElement {
+	const bold: HTMLElement = createButton('Bold', () => handleTextFormatting('Bold', '*'));
+	const italics: HTMLElement = createButton('Italics', () => handleTextFormatting('Italics', '_'));
+	const quote: HTMLElement = createButton('Quote', () => handleTextFormatting('Quote', '> ', true, false));
+	const link: HTMLElement = createButton('Link', () => insertText('[Link text](https://example.com) '));
+	const image: HTMLElement = createButton('Image', () => insertText('![Alt text](https://example.com/image.png) '));
+	const monospace: HTMLElement = createButton('Monospace', () => handleTextFormatting('Monospace', '`'));
+	const h1: HTMLElement = createButton('H1', () => handleTextFormatting('H1', '# ', true, false));
+	const h2: HTMLElement = createButton('H2', () => handleTextFormatting('H2', '## ', true, false));
+	const h3: HTMLElement = createButton('H3', () => handleTextFormatting('H3', '### ', true, false));
+	const h4: HTMLElement = createButton('H4', () => handleTextFormatting('H4', '#### ', true, false));
+
+	const firstRow = document.createElement('div');
+	firstRow.classList.add(`${CSS_PREFIX}markdown-buttons`);
+	firstRow.insertAdjacentElement('beforeend', h1);
+	firstRow.insertAdjacentElement('beforeend', h2);
+	firstRow.insertAdjacentElement('beforeend', h3);
+	firstRow.insertAdjacentElement('beforeend', h4);
+
+	const secondRow = document.createElement('div');
+	secondRow.classList.add(`${CSS_PREFIX}markdown-buttons`);
+	secondRow.insertAdjacentElement('beforeend', bold);
+	secondRow.insertAdjacentElement('beforeend', italics);
+	secondRow.insertAdjacentElement('beforeend', quote);
+	secondRow.insertAdjacentElement('beforeend', link);
+	secondRow.insertAdjacentElement('beforeend', image);
+	secondRow.insertAdjacentElement('beforeend', monospace);
+
+	const container = document.createElement('div');
+	container.insertAdjacentElement('beforeend', firstRow);
+	container.insertAdjacentElement('beforeend', secondRow);
+
+	return container;
+}
+
 export default createFeature(
 	'markdownButtons',
 	async () => {
 		logDebugMessage('Feature Enabled: Markdown buttons for reply box');
 
-		// Create markdown button elements
-		const bold: HTMLElement = createButton('Bold', () => handleTextFormatting('Bold', '*'));
-		const italics: HTMLElement = createButton('Italics', () => handleTextFormatting('Italics', '_'));
-		const quote: HTMLElement = createButton('Quote', () => handleTextFormatting('Quote', '> ', true, false));
-		const link: HTMLElement = createButton('Link', () => insertText('[Link text](https://example.com) '));
-		const image: HTMLElement = createButton('Image', () => insertText('![Alt text](https://example.com/image.png) '));
-		const monospace: HTMLElement = createButton('Monospace', () => handleTextFormatting('Monospace', '`'));
-		const h1: HTMLElement = createButton('H1', () => handleTextFormatting('H1', '# ', true, false));
-		const h2: HTMLElement = createButton('H2', () => handleTextFormatting('H2', '## ', true, false));
-		const h3: HTMLElement = createButton('H3', () => handleTextFormatting('H3', '### ', true, false));
-		const h4: HTMLElement = createButton('H4', () => handleTextFormatting('H4', '#### ', true, false));
-
-		// Insert header markdown button elements
-		const firstRow = document.createElement('div');
-		firstRow.classList.add(`${CSS_PREFIX}markdown-buttons`);
-		firstRow.insertAdjacentElement('beforeend', h1);
-		firstRow.insertAdjacentElement('beforeend', h2);
-		firstRow.insertAdjacentElement('beforeend', h3);
-		firstRow.insertAdjacentElement('beforeend', h4);
-
-		// Insert all other markdown button elements
-		const secondRow = document.createElement('div');
-		secondRow.classList.add(`${CSS_PREFIX}markdown-buttons`);
-		secondRow.insertAdjacentElement('beforeend', bold);
-		secondRow.insertAdjacentElement('beforeend', italics);
-		secondRow.insertAdjacentElement('beforeend', quote);
-		secondRow.insertAdjacentElement('beforeend', link);
-		secondRow.insertAdjacentElement('beforeend', image);
-		secondRow.insertAdjacentElement('beforeend', monospace);
-
-		// Insert markdown buttons container into the DOM
+		// Save cursor position when it changes
 		const replyBox: HTMLElement = document.querySelector('.reply-form-inner');
-		replyBox.insertAdjacentElement('beforebegin', firstRow);
-		replyBox.insertAdjacentElement('beforebegin', secondRow);
-
-		// Save cursor position
 		replyBox.querySelector('textarea').addEventListener('blur', (event) => cursorPosition = event.target.selectionStart);
+
+		// Create and insert markdown buttons
+		const buttons = createButtons();
+		replyBox.insertAdjacentElement('beforebegin', buttons);
 
 		// Style the markdown buttons
 		const rules = `
