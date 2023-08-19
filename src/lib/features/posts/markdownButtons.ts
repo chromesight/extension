@@ -18,7 +18,7 @@ function insertText(text: string): void {
 }
 
 // Either wrap selected text in markdown formatting or insert markdown formatting placeholders
-function handleTextFormatting(text: string, symbol: string, start = true, end = true): void {
+function handleTextFormatting(defaultText: string, symbol: string, start = true, end = true): void {
 	const selection = window.getSelection();
 	const replyBox: HTMLElement = document.querySelector('.reply-form-inner');
 	if (selection.anchorNode === replyBox && selection.type === 'Range') {
@@ -32,10 +32,23 @@ function handleTextFormatting(text: string, symbol: string, start = true, end = 
 		}
 	}
 	else if (start && end) {
-		insertText(`${symbol}${text}${symbol} `);
+		insertText(`${symbol}${defaultText}${symbol} `);
 	}
 	else if (start) {
-		insertText(`${symbol}${text} `);
+		insertText(`${symbol}${defaultText}\n`);
+	}
+}
+
+function handleCodeFormatting() {
+	const selection = window.getSelection();
+	const replyBox: HTMLElement = document.querySelector('.reply-form-inner');
+	if (selection.anchorNode === replyBox && selection.type === 'Range') {
+		const textarea = replyBox.querySelector('textarea');
+		const selectedText = selection.toString();
+		textarea.setRangeText(`\n\`\`\`javascript\n${selectedText}\n\`\`\`\n`);
+	}
+	else {
+		insertText('\n```javascript\nconst foo = bar;\n```\n');
 	}
 }
 
@@ -51,9 +64,11 @@ function createButtons(): HTMLElement {
 	const bold: HTMLElement = createButton('Bold', () => handleTextFormatting('Bold', '*'));
 	const italics: HTMLElement = createButton('Italics', () => handleTextFormatting('Italics', '_'));
 	const quote: HTMLElement = createButton('Quote', () => handleTextFormatting('Quote', '> ', true, false));
-	const link: HTMLElement = createButton('Link', () => insertText('[Link text](https://example.com) '));
-	const image: HTMLElement = createButton('Image', () => insertText('![Alt text](https://example.com/image.png) '));
+	const link: HTMLElement = createButton('Link', () => insertText('\n[Link text](https://example.com)\n'));
+	const image: HTMLElement = createButton('Image', () => insertText('\n![Alt text](https://example.com/image.png)\n'));
 	const monospace: HTMLElement = createButton('Monospace', () => handleTextFormatting('Monospace', '`'));
+	const textBlock: HTMLElement = createButton('Text Block', () => handleTextFormatting('Text Block', '\n```\n'));
+	const codeBlock: HTMLElement = createButton('Code Block', handleCodeFormatting);
 	const h1: HTMLElement = createButton('H1', () => handleTextFormatting('H1', '# ', true, false));
 	const h2: HTMLElement = createButton('H2', () => handleTextFormatting('H2', '## ', true, false));
 	const h3: HTMLElement = createButton('H3', () => handleTextFormatting('H3', '### ', true, false));
@@ -74,8 +89,11 @@ function createButtons(): HTMLElement {
 	secondRow.insertAdjacentElement('beforeend', link);
 	secondRow.insertAdjacentElement('beforeend', image);
 	secondRow.insertAdjacentElement('beforeend', monospace);
+	secondRow.insertAdjacentElement('beforeend', textBlock);
+	secondRow.insertAdjacentElement('beforeend', codeBlock);
 
 	const container = document.createElement('div');
+	container.classList.add(`${CSS_PREFIX}markdown-toolbar`);
 	container.insertAdjacentElement('beforeend', firstRow);
 	container.insertAdjacentElement('beforeend', secondRow);
 
@@ -97,14 +115,23 @@ export default createFeature(
 
 		// Style the markdown buttons
 		const rules = `
+		.${CSS_PREFIX}markdown-toolbar {
+			display: flex;
+			flex-wrap: wrap;
+		}
 		.${CSS_PREFIX}markdown-buttons {
+			margin-right: 6px;
+			padding-right: 6px;
+			border-right: 2px solid var(--MenuText);
 			margin-bottom: 0.5em;
 		}
-		.${CSS_PREFIX}markdown-buttons:first-of-type {
-			margin-bottom: 2px;
+		.${CSS_PREFIX}markdown-buttons:last-of-type {
+			border-right: 0;
 		}
 		.${CSS_PREFIX}markdown-buttons > button {
+			padding: 0 3px;
 			margin: 0 2px;
+			font-size: 12px;
 		}
 		.${CSS_PREFIX}markdown-buttons > button:first-of-type {
 			margin-left: 0;
