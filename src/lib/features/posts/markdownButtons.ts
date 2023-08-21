@@ -2,53 +2,36 @@ import logDebugMessage from '~lib/logs/debug';
 import createFeature from '../feature';
 import { CSS_PREFIX } from '~constants';
 
-let cursorPosition: number;
+let cursorPosition: number | null = null;
+const replyBox: HTMLElement = document.querySelector('.reply-form-inner');
+const textarea: HTMLTextAreaElement = replyBox.querySelector('textarea');
 
-// Either insert text at last known cursor position or append to end of textarea
+function isReplySelected(selection = window.getSelection()) {
+	return selection.anchorNode === replyBox && selection.type === 'Range';
+}
+
 function insertText(text: string): void {
-	if (text) {
-		const textarea: HTMLElement = document.querySelector('#reply-content');
-		if (cursorPosition) {
-			textarea.value = textarea.value.slice(0, cursorPosition) + text + textarea.value.slice(cursorPosition);
-		}
-		else {
-			textarea.value += text;
-		}
-	}
-}
-
-// Either wrap selected text in markdown formatting or insert markdown formatting placeholders
-function handleTextFormatting(defaultText: string, symbol: string, start = true, end = true): void {
-	const selection = window.getSelection();
-	const replyBox: HTMLElement = document.querySelector('.reply-form-inner');
-	if (selection.anchorNode === replyBox && selection.type === 'Range') {
-		const textarea = replyBox.querySelector('textarea');
-		const selectedText = selection.toString();
-		if (start && end) {
-			textarea.setRangeText(`${symbol}${selectedText}${symbol}`);
-		}
-		else if (start) {
-			textarea.setRangeText(`${symbol}${selectedText}`);
-		}
-	}
-	else if (start && end) {
-		insertText(`${symbol}${defaultText}${symbol} `);
-	}
-	else if (start) {
-		insertText(`${symbol}${defaultText}\n`);
-	}
-}
-
-function handleCodeFormatting() {
-	const selection = window.getSelection();
-	const replyBox: HTMLElement = document.querySelector('.reply-form-inner');
-	if (selection.anchorNode === replyBox && selection.type === 'Range') {
-		const textarea = replyBox.querySelector('textarea');
-		const selectedText = selection.toString();
-		textarea.setRangeText(`\n\`\`\`javascript\n${selectedText}\n\`\`\`\n`);
+	if (cursorPosition === null) {
+		textarea.value += text;
 	}
 	else {
-		insertText('\n```javascript\nconst foo = bar;\n```\n');
+		const { value } = textarea;
+		textarea.value = value.slice(0, cursorPosition) + text + value.slice(cursorPosition);
+	}
+}
+
+function handleFormatting(defaultText: string, start: string, end: string | boolean = false, ignoreEmptyLines = true): void {
+	const selection = window.getSelection();
+	if (isReplySelected(selection)) {
+		let selectedLines = selection.toString().split('\n');
+		if (ignoreEmptyLines) {
+			selectedLines = selectedLines.filter(line => line);
+		}
+		const modifiedLines = selectedLines.map(line => `${start}${line}${end ? end : ''}`);
+		textarea.setRangeText(modifiedLines.join('\n'));
+	}
+	else {
+		insertText(defaultText);
 	}
 }
 
@@ -60,44 +43,69 @@ function createButton(text: string, cb: () => void): HTMLElement {
 	return button;
 }
 
-function createButtons(): HTMLElement {
-	const bold: HTMLElement = createButton('Bold', () => handleTextFormatting('Bold', '*'));
-	const italics: HTMLElement = createButton('Italics', () => handleTextFormatting('Italics', '_'));
-	const quote: HTMLElement = createButton('Quote', () => handleTextFormatting('Quote', '> ', true, false));
-	const link: HTMLElement = createButton('Link', () => insertText('\n[Link text](https://example.com)\n'));
-	const image: HTMLElement = createButton('Image', () => insertText('\n![Alt text](https://example.com/image.png)\n'));
-	const monospace: HTMLElement = createButton('Monospace', () => handleTextFormatting('Monospace', '`'));
-	const textBlock: HTMLElement = createButton('Text Block', () => handleTextFormatting('Text Block', '\n```\n'));
-	const codeBlock: HTMLElement = createButton('Code Block', handleCodeFormatting);
-	const h1: HTMLElement = createButton('H1', () => handleTextFormatting('H1', '# ', true, false));
-	const h2: HTMLElement = createButton('H2', () => handleTextFormatting('H2', '## ', true, false));
-	const h3: HTMLElement = createButton('H3', () => handleTextFormatting('H3', '### ', true, false));
-	const h4: HTMLElement = createButton('H4', () => handleTextFormatting('H4', '#### ', true, false));
+function createToolbar(): HTMLElement {
+	const h1: HTMLElement = createButton('H1', () => handleFormatting('# H1 ', '\n# '));
+	const h2: HTMLElement = createButton('H2', () => handleFormatting('## H2 ', '\n## '));
+	const h3: HTMLElement = createButton('H3', () => handleFormatting('### H3 ', '\n### '));
+	const h4: HTMLElement = createButton('H4', () => handleFormatting('#### H4 ', '\n#### '));
+	const bold: HTMLElement = createButton('Bold', () => handleFormatting('*Bolded text* ', '*', '*'));
+	const italics: HTMLElement = createButton('Italics', () => handleFormatting('_Italicized text_ ', '_', '_'));
+	const quote: HTMLElement = createButton('Quote', () => handleFormatting('> Quoted text', '> ', false, false));
+	const link: HTMLElement = createButton('Link', () => insertText('[Link text](https://example.com) '));
+	const image: HTMLElement = createButton('Image', () => insertText('![Alt text](https://example.com/image.png) '));
+	const monospace: HTMLElement = createButton('Monospace', () => handleFormatting('`Monospace` ', '`', '`'));
+	const textBlock: HTMLElement = createButton('Text Block', () => {
+		const defaultText = '\n```\nText Block\n```';
+		const start = '\n```\n';
+		const end = '\n```';
+		handleFormatting(defaultText, start, end);
+	});
+	const codeBlock: HTMLElement = createButton('Code Block', () => {
+		const defaultText = '\n```javascript\nconst foo = bar;\n```';
+		const start = '\n```javascript\n';
+		const end = '\n```';
+		handleFormatting(defaultText, start, end);
+	});
 
-	const firstRow = document.createElement('div');
-	firstRow.classList.add(`${CSS_PREFIX}markdown-buttons`);
-	firstRow.insertAdjacentElement('beforeend', h1);
-	firstRow.insertAdjacentElement('beforeend', h2);
-	firstRow.insertAdjacentElement('beforeend', h3);
-	firstRow.insertAdjacentElement('beforeend', h4);
+	// Add buttons to toolbar
+	const buttonGroups = [
+		// Headings
+		[
+			h1,
+			h2,
+			h3,
+			h4,
+		],
+		// Text formatting
+		[
+			bold,
+			italics,
+			quote,
+			monospace,
+		],
+		// Embeds
+		[
+			link,
+			image,
+		],
+		// Blocks
+		[
+			textBlock,
+			codeBlock,
+		],
+	];
+	const toolbar = document.createElement('div');
+	toolbar.classList.add(`${CSS_PREFIX}markdown-toolbar`);
+	buttonGroups.forEach(buttonGroup => {
+		const group = document.createElement('div');
+		group.classList.add(`${CSS_PREFIX}markdown-buttons`);
+		buttonGroup.forEach(button => {
+			group.insertAdjacentElement('beforeend', button);
+		});
+		toolbar.insertAdjacentElement('beforeend', group);
+	});
 
-	const secondRow = document.createElement('div');
-	secondRow.classList.add(`${CSS_PREFIX}markdown-buttons`);
-	secondRow.insertAdjacentElement('beforeend', bold);
-	secondRow.insertAdjacentElement('beforeend', italics);
-	secondRow.insertAdjacentElement('beforeend', quote);
-	secondRow.insertAdjacentElement('beforeend', link);
-	secondRow.insertAdjacentElement('beforeend', image);
-	secondRow.insertAdjacentElement('beforeend', monospace);
-	secondRow.insertAdjacentElement('beforeend', textBlock);
-	secondRow.insertAdjacentElement('beforeend', codeBlock);
-
-	const container = document.createElement('div');
-	container.classList.add(`${CSS_PREFIX}markdown-toolbar`);
-	container.insertAdjacentElement('beforeend', firstRow);
-	container.insertAdjacentElement('beforeend', secondRow);
-
-	return container;
+	return toolbar;
 }
 
 export default createFeature(
@@ -105,25 +113,28 @@ export default createFeature(
 	async () => {
 		logDebugMessage('Feature Enabled: Markdown buttons for reply box');
 
-		// Save cursor position when it changes
-		const replyBox: HTMLElement = document.querySelector('.reply-form-inner');
-		replyBox.querySelector('textarea').addEventListener('blur', (event) => cursorPosition = event.target.selectionStart);
+		const toolbar = createToolbar();
+		replyBox.insertAdjacentElement('beforebegin', toolbar);
 
-		// Create and insert markdown buttons
-		const buttons = createButtons();
-		replyBox.insertAdjacentElement('beforebegin', buttons);
+		textarea.addEventListener('blur', (event) => cursorPosition = event.target.selectionStart);
 
-		// Style the markdown buttons
 		const rules = `
 		.${CSS_PREFIX}markdown-toolbar {
 			display: flex;
 			flex-wrap: wrap;
+			padding: 6px;
+			background: var(--InputBG);
+			border-top-width: 1px;
+			border-right-width: 1px;
+			border-left-width: 1px;
+			border-bottom-width: 0;
+			border-style: solid;
+			border-color: rgb(118, 118, 118);
 		}
 		.${CSS_PREFIX}markdown-buttons {
 			margin-right: 6px;
 			padding-right: 6px;
-			border-right: 2px solid var(--MenuText);
-			margin-bottom: 0.5em;
+			border-right: 2px solid rgb(118, 118, 118);
 		}
 		.${CSS_PREFIX}markdown-buttons:last-of-type {
 			border-right: 0;
