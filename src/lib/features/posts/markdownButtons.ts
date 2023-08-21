@@ -6,10 +6,6 @@ let cursorPosition: number | null = null;
 const replyBox: HTMLElement = document.querySelector('.reply-form-inner');
 const textarea: HTMLTextAreaElement = replyBox.querySelector('textarea');
 
-function isReplySelected(selection = window.getSelection()) {
-	return selection.anchorNode === replyBox && selection.type === 'Range';
-}
-
 function insertText(text: string): void {
 	if (cursorPosition === null) {
 		textarea.value += text;
@@ -22,12 +18,12 @@ function insertText(text: string): void {
 
 function handleFormatting(defaultText: string, start: string, end: string | boolean = false, ignoreEmptyLines = true): void {
 	const selection = window.getSelection();
-	if (isReplySelected(selection)) {
+	if (selection.anchorNode === replyBox && selection.type === 'Range') {
 		let selectedLines = selection.toString().split('\n');
 		if (ignoreEmptyLines) {
 			selectedLines = selectedLines.filter(line => line);
 		}
-		const modifiedLines = selectedLines.map(line => `${start}${line}${end ? end : ''}`);
+		const modifiedLines = selectedLines.map(line => `${start}${line.trim()}${end ? end : ''}${line.charAt(line.length - 1) === ' ' ? ' ' : ''}`);
 		textarea.setRangeText(modifiedLines.join('\n'));
 	}
 	else {
