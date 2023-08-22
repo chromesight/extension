@@ -22,7 +22,6 @@ const features: Feature[] = [
 	filterMe,
 	embedTwitter,
 	markdownButtons,
-	dramalinks,
 ];
 
 export default features;
