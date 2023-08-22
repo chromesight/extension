@@ -47,9 +47,9 @@ function createToolbar(): HTMLElement {
 	const bold: HTMLElement = createButton('Bold', () => handleFormatting('*Bolded text* ', '*', '*'));
 	const italics: HTMLElement = createButton('Italics', () => handleFormatting('_Italicized text_ ', '_', '_'));
 	const quote: HTMLElement = createButton('Quote', () => handleFormatting('> Quoted text', '> ', false, false));
+	const monospace: HTMLElement = createButton('Monospace', () => handleFormatting('`Monospace` ', '`', '`'));
 	const link: HTMLElement = createButton('Link', () => insertText('[Link text](https://example.com) '));
 	const image: HTMLElement = createButton('Image', () => insertText('![Alt text](https://example.com/image.png) '));
-	const monospace: HTMLElement = createButton('Monospace', () => handleFormatting('`Monospace` ', '`', '`'));
 	const textBlock: HTMLElement = createButton('Text Block', () => {
 		const defaultText = '\n```\nText Block\n```';
 		const start = '\n```\n';
