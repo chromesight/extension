@@ -117,7 +117,7 @@ async function initializeDramalinks() {
 export default createFeature(
 	'dramalinks',
 	async () => {
-		logDebugMessage('Feature Enabled: Display dramalinks ticker above topic list');
+		logDebugMessage('Feature Enabled: Dramalinks ticker');
 
 		initializeDramalinks();
 	},
