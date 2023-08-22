@@ -36,8 +36,8 @@ export default function PostsOptions() {
 
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Mark posts by topic creator</p>
-					<p className={style.description}>Add "TC" next to topic creator's name</p>
+					<p className={style.label}>Mark topic creator's posts</p>
+					<p className={style.description}>Adds "TC" next to the topic creator's name</p>
 				</div>
 				<Switch
 					onChange={(checked: boolean) => setMarkTopicCreator({ ...markTopicCreator, enabled: checked })}
@@ -48,7 +48,7 @@ export default function PostsOptions() {
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
 					<p className={style.label}>Scroll new posts into view</p>
-					<p className={style.description}>Only when you're at the bottom of a thread</p>
+					<p className={style.description}>Only when you're at the bottom of a topic</p>
 				</div>
 				<Switch
 					onChange={(checked: boolean) => setAutoScroll({ ...autoScroll, enabled: checked })}
@@ -59,7 +59,7 @@ export default function PostsOptions() {
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
 					<p className={style.label}>Redirect to new page when created</p>
-					<p className={style.description}>Only when you're at the bottom of a thread</p>
+					<p className={style.description}>Only when you're at the bottom of a topic</p>
 				</div>
 				<Switch
 					onChange={(checked: boolean) => setAutoRedirect({ ...autoRedirect, enabled: checked })}
@@ -69,12 +69,23 @@ export default function PostsOptions() {
 
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Add "Filter Me" link</p>
+					<p className={style.label}>"Filter Me" link</p>
 					<p className={style.description}>Adds a link to filter your own posts in a topic</p>
 				</div>
 				<Switch
 					onChange={(checked: boolean) => setFilterMe({ ...filterMe, enabled: checked })}
 					checked={filterMe.enabled}
+				/>
+			</fieldset>
+
+			<fieldset className={style.fieldset}>
+				<div className={`${style.group} ${style.small}`}>
+					<p className={style.label}>Markdown buttons</p>
+					<p className={style.description}>Adds markdown formatting buttons above the reply box</p>
+				</div>
+				<Switch
+					onChange={(checked: boolean) => setMarkdownButtons({ ...markdownButtons, enabled: checked })}
+					checked={markdownButtons.enabled}
 				/>
 			</fieldset>
 
@@ -111,17 +122,6 @@ export default function PostsOptions() {
 					<option value="dark">Dark</option>
 					<option value="light">Light</option>
 				</select>
-			</fieldset>
-
-			<fieldset className={style.fieldset}>
-				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Add markdown buttons</p>
-					<p className={style.description}>Adds markdown formatting buttons above the reply box</p>
-				</div>
-				<Switch
-					onChange={(checked: boolean) => setMarkdownButtons({ ...markdownButtons, enabled: checked })}
-					checked={markdownButtons.enabled}
-				/>
 			</fieldset>
 
 		</div>

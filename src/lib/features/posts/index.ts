@@ -1,4 +1,5 @@
 import type { Feature } from '../feature';
+import dramalinks from '../threadList/dramalinks';
 import highlighter from '../users/highlighter';
 import ignorator from '../users/ignorator';
 import autoRedirect from './autoRedirect';
@@ -21,6 +22,7 @@ const features: Feature[] = [
 	filterMe,
 	embedTwitter,
 	markdownButtons,
+	dramalinks,
 ];
 
 export default features;
