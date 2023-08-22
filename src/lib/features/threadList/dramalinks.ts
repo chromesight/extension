@@ -43,7 +43,6 @@ function calculateContrast(rgb: string): string {
 	const g = parseInt(hex.substring(3, 5), 16);
 	const b = parseInt(hex.substring(5, 7), 16);
 	const yiq = ((r * 99) + (g * 587) + (b * 114)) / 1000;
-	console.log(yiq);
 	return (yiq >= 128) ? 'black' : 'white';
 }
 
