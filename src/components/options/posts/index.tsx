@@ -1,5 +1,5 @@
 import { useStorage } from '@plasmohq/storage/hook';
-import Switch from '~components/ui/switch';
+import Switch from '~components/ui/Switch';
 import type { FeatureSettings } from '~lib/features/feature';
 import style from '../style.module.css';
 

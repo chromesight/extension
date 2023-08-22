@@ -1,6 +1,6 @@
 import { useStorage } from '@plasmohq/storage/hook';
 import type { FeatureSettings } from '~lib/features/feature';
-import Switch from '~components/ui/switch';
+import Switch from '~components/ui/Switch';
 import style from '../style.module.css';
 
 const defaultSettings = v => v === undefined ? { enabled: false } : v;

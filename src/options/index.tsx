@@ -1,6 +1,6 @@
 import '../global.css';
 import style from './style.module.css';
-import Container from '~components/ui/container';
+import Container from '~components/ui/Container';
 import GeneralOptions from '~components/options/general';
 import PostsOptions from '~components/options/posts';
 import UsersOptions from '~components/options/users';

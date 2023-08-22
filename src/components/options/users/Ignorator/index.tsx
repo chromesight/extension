@@ -1,7 +1,7 @@
-import Switch from '~components/ui/switch';
+import Switch from '~components/ui/Switch';
 import pageStyles from '../../style.module.css';
 import styles from './style.module.css';
-import Button from '~components/ui/button';
+import Button from '~components/ui/Button';
 import { addUserToIgnorator, removeUserFromIgnorator } from '~lib/features/users/ignorator';
 
 function IgnoratedUsers({ users, handleUserState }) {

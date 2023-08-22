@@ -39,10 +39,10 @@ async function queryColor(dramalinks: Document): Promise<string> {
 // Determine contrast YIQ value and contrasting color
 function calculateContrast(rgb: string): string {
 	const hex = `#${rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/).slice(1).map(n => parseInt(n, 10).toString(16).padStart(2, '0')).join('')}`;
-	const r = parseInt(hex.substring(1,3),16);
-	const g = parseInt(hex.substring(3,5),16);
-	const b = parseInt(hex.substring(5,7),16);
-	const yiq = ((r*99) + (g*587) + (b*114)) / 1000;
+	const r = parseInt(hex.substring(1, 3), 16);
+	const g = parseInt(hex.substring(3, 5), 16);
+	const b = parseInt(hex.substring(5, 7), 16);
+	const yiq = ((r * 99) + (g * 587) + (b * 114)) / 1000;
 	console.log(yiq);
 	return (yiq >= 128) ? 'black' : 'white';
 }

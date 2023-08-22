@@ -1,5 +1,5 @@
 import * as Constants from '~constants';
-import Button from '~components/ui/button';
+import Button from '~components/ui/Button';
 import mascot from 'data-base64:~assets/mario-riding-yoshi-100x100.png';
 import style from './style.module.css';
 import '../global.css';

@@ -112,7 +112,7 @@ export default createFeature(
 		const toolbar = createToolbar();
 		replyBox.insertAdjacentElement('beforebegin', toolbar);
 
-		textarea.addEventListener('blur', (event) => cursorPosition = event.target.selectionStart);
+		textarea.addEventListener('blur', (event) => cursorPosition = (event.target as HTMLTextAreaElement).selectionStart);
 
 		const rules = `
 		.${CSS_PREFIX}markdown-toolbar {
