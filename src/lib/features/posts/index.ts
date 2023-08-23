@@ -1,5 +1,4 @@
 import type { Feature } from '../feature';
-import dramalinks from '../threadList/dramalinks';
 import highlighter from '../users/highlighter';
 import ignorator from '../users/ignorator';
 import autoRedirect from './autoRedirect';

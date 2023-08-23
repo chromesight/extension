@@ -52,7 +52,7 @@ export default function GeneralOptions() {
 
 			<fieldset className={style.fieldset} style={{ marginLeft: 28 }}>
 				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Alignment</p>
+					<p className={style.label}>Text alignment</p>
 				</div>
 				<select
 					value={dramalinks.align}
