@@ -1,6 +1,8 @@
 import logDebugMessage from '~lib/logs/debug';
 import createFeature from '../feature';
+import { Storage } from '@plasmohq/storage';
 import { CSS_PREFIX } from '~constants';
+import type { DramalinksSettings } from '~components/options/general';
 
 type DramalinksQuery = {
 	items: string[];
@@ -59,18 +61,24 @@ async function parseDramalinks(dramalinks: Document): Promise<DramalinksQuery> {
 }
 
 // Format dramalinks for thread list and insert to DOM
-function formatDramalinks(query: DramalinksQuery) {
+async function formatDramalinks(query: DramalinksQuery) {
 	const container = document.createElement('div');
 	container.setAttribute('id', `${CSS_PREFIX}dramalinks-ticker`);
 	container.style.backgroundColor = query.color;
 
-	const list = document.createElement('ul');
-	query.items.forEach(item => {
-		const element = document.createElement('li');
+	const storage = new Storage();
+	const settings:DramalinksSettings = await storage.get('dramalinks');
+	container.classList.add(`${CSS_PREFIX}${settings.format}`);
+	container.classList.add(`${CSS_PREFIX}${settings.align}`);
+
+	query.items.forEach((item, index) => {
+		const element = document.createElement('p');
 		element.innerHTML = item;
-		list.insertAdjacentElement('beforeend', element);
+		if (index < query.items.length - 1 && settings.format === 'wrap') {
+			element.innerHTML += `<span class="${CSS_PREFIX}dramalinks-seperator">■</span>`;
+		}
+		container.insertAdjacentElement('beforeend', element);
 	});
-	container.insertAdjacentElement('beforeend', list);
 
 	return container;
 }
@@ -79,7 +87,7 @@ async function initializeDramalinks() {
 	const dramalinks = await getDramalinks();
 	if (dramalinks) {
 		const data = await parseDramalinks(dramalinks);
-		const ticker = formatDramalinks(data);
+		const ticker = await formatDramalinks(data);
 		document.querySelector('.body > h1').insertAdjacentElement('afterend', ticker);
 
 		const rules = `
@@ -93,19 +101,40 @@ async function initializeDramalinks() {
 			color: ${data.textColor};
 			text-decoration-color: ${data.textColor};
 		}
-		#${CSS_PREFIX}dramalinks-ticker ul {
-			list-style-type: none;
-			padding: 0;
+		#${CSS_PREFIX}dramalinks-ticker > p {
+			padding: 4px 6px;
 			margin: 0;
 		}
-		#${CSS_PREFIX}dramalinks-ticker ul > li {
-			padding: 4px 6px;
-		}
-		#${CSS_PREFIX}dramalinks-ticker ul > li:nth-of-type(even) {
-			background: rgba(${data.textColor === 'white' ? '0,0,0,.1' : '255,255,255,.15'});
+		#${CSS_PREFIX}dramalinks-ticker > p:nth-of-type(even) {
+			background: rgba(${data.textColor === 'black' ? '0,0,0,.1' : '255,255,255,.05'});
 		}
 		#${CSS_PREFIX}dramalinks-ticker br {
 			display: none;
+		}
+		#${CSS_PREFIX}dramalinks-ticker .${CSS_PREFIX}dramalinks-seperator {
+			margin: 0 12px;
+		}
+		#${CSS_PREFIX}dramalinks-ticker.${CSS_PREFIX}wrap {
+			padding: 4px 6px;
+			word-wrap: break-word;
+			white-space: normal;
+		}
+		#${CSS_PREFIX}dramalinks-ticker.${CSS_PREFIX}wrap > p {
+			padding: 0;
+			display: inline;
+			line-height: 1.6;
+		}
+		#${CSS_PREFIX}dramalinks-ticker.${CSS_PREFIX}wrap > p:nth-of-type(even) {
+			background: initial;
+		}
+		#${CSS_PREFIX}dramalinks-ticker.${CSS_PREFIX}left {
+			text-align: left;
+		}
+		#${CSS_PREFIX}dramalinks-ticker.${CSS_PREFIX}center {
+			text-align: center;
+		}
+		#${CSS_PREFIX}dramalinks-ticker.${CSS_PREFIX}right {
+			text-align: right;
 		}`;
 		const styles = document.createElement('style');
 		styles.innerHTML = rules;

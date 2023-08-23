@@ -47,8 +47,8 @@ export default function PostsOptions() {
 
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Scroll new posts into view</p>
-					<p className={style.description}>Only when you're at the bottom of a topic</p>
+					<p className={style.label}>Auto scroll</p>
+					<p className={style.description}>Scroll new posts into view when you're at the bottom of a topic</p>
 				</div>
 				<Switch
 					onChange={(checked: boolean) => setAutoScroll({ ...autoScroll, enabled: checked })}
@@ -113,7 +113,7 @@ export default function PostsOptions() {
 
 			<fieldset className={style.fieldset} style={{ marginLeft: 28 }}>
 				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Tweet Theme</p>
+					<p className={style.label}>Theme</p>
 				</div>
 				<select
 					value={embedTwitter.theme}
