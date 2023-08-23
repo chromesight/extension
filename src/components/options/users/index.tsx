@@ -1,6 +1,6 @@
 import { useStorage } from '@plasmohq/storage/hook';
 import { useCallback } from 'react';
-import Switch from '~components/ui/switch';
+import Switch from '~components/ui/Switch';
 import Ignorator from '~components/options/users/ignorator';
 import style from '../style.module.css';
 import Highlighter from './highlighter';

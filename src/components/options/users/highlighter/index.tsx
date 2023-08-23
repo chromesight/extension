@@ -1,5 +1,5 @@
-import ColorPicker from '~components/ui/colorPicker';
-import Button from '~components/ui/button';
+import ColorPicker from '~components/ui/ColorPicker';
+import Button from '~components/ui/Button';
 import { addUserToHighlighter, removeUserFromHighlighter } from '~lib/features/users/highlighter';
 import pageStyles from '../../style.module.css';
 import styles from './style.module.css';

@@ -1,6 +1,6 @@
 export type Feature = {
-    settingsKey: string;
-    execute: () => Promise<void>;
+	settingsKey: string;
+	execute: () => Promise<void>;
 	executeOnNewPost: (node: HTMLElement) => Promise<void>;
 }
 

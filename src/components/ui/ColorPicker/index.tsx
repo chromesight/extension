@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import type { MouseEventHandler } from 'react';
 import { SketchPicker } from 'react-color';
 import styles from './style.module.css';
 

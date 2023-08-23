@@ -1,5 +1,5 @@
 import { useStorage } from '@plasmohq/storage/hook';
-import Switch from '~components/ui/switch';
+import Switch from '~components/ui/Switch';
 import type { FeatureSettings } from '~lib/features/feature';
 import style from '../style.module.css';
 
@@ -18,6 +18,7 @@ export default function PostsOptions() {
 	const [autoRedirect, setAutoRedirect] = useStorage<FeatureSettings>('autoRedirect', defaultSettings);
 	const [nwsTopicImages, setNwsTopicImages] = useStorage<FeatureSettings>('nwsTopicImages', defaultSettings);
 	const [embedTwitter, setEmbedTwitter] = useStorage<EmbedTwitterSettings>('embedTwitter', v => v === undefined ? { enabled: false, theme: 'dark' } : v);
+	const [markdownButtons, setMarkdownButtons] = useStorage<FeatureSettings>('markdownButtons', defaultSettings);
 
 	return (
 		<div className={style.group} id="posts">
@@ -35,8 +36,8 @@ export default function PostsOptions() {
 
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Mark posts by topic creator</p>
-					<p className={style.description}>Add "TC" next to topic creator's name</p>
+					<p className={style.label}>Mark topic creator's posts</p>
+					<p className={style.description}>Adds "TC" next to the topic creator's name</p>
 				</div>
 				<Switch
 					onChange={(checked: boolean) => setMarkTopicCreator({ ...markTopicCreator, enabled: checked })}
@@ -46,8 +47,8 @@ export default function PostsOptions() {
 
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Scroll new posts into view</p>
-					<p className={style.description}>Only when you're at the bottom of a thread</p>
+					<p className={style.label}>Auto scroll</p>
+					<p className={style.description}>Scroll new posts into view when you're at the bottom of a topic</p>
 				</div>
 				<Switch
 					onChange={(checked: boolean) => setAutoScroll({ ...autoScroll, enabled: checked })}
@@ -58,7 +59,7 @@ export default function PostsOptions() {
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
 					<p className={style.label}>Redirect to new page when created</p>
-					<p className={style.description}>Only when you're at the bottom of a thread</p>
+					<p className={style.description}>Only when you're at the bottom of a topic</p>
 				</div>
 				<Switch
 					onChange={(checked: boolean) => setAutoRedirect({ ...autoRedirect, enabled: checked })}
@@ -68,12 +69,23 @@ export default function PostsOptions() {
 
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Add "Filter Me" link</p>
+					<p className={style.label}>"Filter Me" link</p>
 					<p className={style.description}>Adds a link to filter your own posts in a topic</p>
 				</div>
 				<Switch
 					onChange={(checked: boolean) => setFilterMe({ ...filterMe, enabled: checked })}
 					checked={filterMe.enabled}
+				/>
+			</fieldset>
+
+			<fieldset className={style.fieldset}>
+				<div className={`${style.group} ${style.small}`}>
+					<p className={style.label}>Markdown buttons</p>
+					<p className={style.description}>Adds markdown formatting buttons above the reply box</p>
+				</div>
+				<Switch
+					onChange={(checked: boolean) => setMarkdownButtons({ ...markdownButtons, enabled: checked })}
+					checked={markdownButtons.enabled}
 				/>
 			</fieldset>
 
@@ -101,7 +113,7 @@ export default function PostsOptions() {
 
 			<fieldset className={style.fieldset} style={{ marginLeft: 28 }}>
 				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Tweet Theme</p>
+					<p className={style.label}>Theme</p>
 				</div>
 				<select
 					value={embedTwitter.theme}
