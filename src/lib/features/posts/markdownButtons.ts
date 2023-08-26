@@ -16,7 +16,7 @@ function insertText(text: string): void {
 	}
 }
 
-function handleFormatting(defaultText: string, start: string, end: string | boolean = false, ignoreEmptyLines = true): void {
+function handleTextFormatting(defaultText: string, start: string, end: string | boolean = false, ignoreEmptyLines = true): void {
 	const selection = window.getSelection();
 	if (selection.anchorNode === replyBox && selection.type === 'Range') {
 		let selectedLines = selection.toString().split('\n');
@@ -25,6 +25,16 @@ function handleFormatting(defaultText: string, start: string, end: string | bool
 		}
 		const modifiedLines = selectedLines.map(line => `${start}${line.trim()}${end ? end : ''}${line.charAt(line.length - 1) === ' ' ? ' ' : ''}`);
 		textarea.setRangeText(modifiedLines.join('\n'));
+	}
+	else {
+		insertText(defaultText);
+	}
+}
+
+function handleBlockFormatting(defaultText: string, start: string, end: string | boolean = false): void {
+	const selection = window.getSelection();
+	if (selection.anchorNode === replyBox && selection.type === 'Range') {
+		textarea.setRangeText(`${start}${selection.toString()}${end}`);
 	}
 	else {
 		insertText(defaultText);
@@ -40,27 +50,33 @@ function createButton(text: string, cb: () => void): HTMLElement {
 }
 
 function createToolbar(): HTMLElement {
-	const h1: HTMLElement = createButton('H1', () => handleFormatting('# H1 ', '\n# '));
-	const h2: HTMLElement = createButton('H2', () => handleFormatting('## H2 ', '\n## '));
-	const h3: HTMLElement = createButton('H3', () => handleFormatting('### H3 ', '\n### '));
-	const h4: HTMLElement = createButton('H4', () => handleFormatting('#### H4 ', '\n#### '));
-	const bold: HTMLElement = createButton('Bold', () => handleFormatting('*Bolded text* ', '*', '*'));
-	const italics: HTMLElement = createButton('Italics', () => handleFormatting('_Italicized text_ ', '_', '_'));
-	const quote: HTMLElement = createButton('Quote', () => handleFormatting('> Quoted text', '> ', false, false));
-	const monospace: HTMLElement = createButton('Monospace', () => handleFormatting('`Monospace` ', '`', '`'));
+	const h1: HTMLElement = createButton('H1', () => handleTextFormatting('# H1 ', '\n# '));
+	const h2: HTMLElement = createButton('H2', () => handleTextFormatting('## H2 ', '\n## '));
+	const h3: HTMLElement = createButton('H3', () => handleTextFormatting('### H3 ', '\n### '));
+	const h4: HTMLElement = createButton('H4', () => handleTextFormatting('#### H4 ', '\n#### '));
+	const bold: HTMLElement = createButton('Bold', () => handleTextFormatting('*Bolded text* ', '*', '*'));
+	const italics: HTMLElement = createButton('Italics', () => handleTextFormatting('_Italicized text_ ', '_', '_'));
+	const quote: HTMLElement = createButton('Quote', () => handleTextFormatting('> Quoted text', '> ', false, false));
+	const monospace: HTMLElement = createButton('Monospace', () => handleTextFormatting('`Monospace` ', '`', '`'));
 	const link: HTMLElement = createButton('Link', () => insertText('[Link text](https://example.com) '));
 	const image: HTMLElement = createButton('Image', () => insertText('![Alt text](https://example.com/image.png) '));
+	const spoiler: HTMLElement = createButton('Spoiler', () => {
+		const defaultText = '<spoiler>\n\n</spoiler>';
+		const start = '<spoiler>\n';
+		const end = '\n</spoiler>';
+		handleBlockFormatting(defaultText, start, end);
+	});
 	const textBlock: HTMLElement = createButton('Text Block', () => {
 		const defaultText = '\n```\nText Block\n```';
 		const start = '\n```\n';
 		const end = '\n```';
-		handleFormatting(defaultText, start, end);
+		handleBlockFormatting(defaultText, start, end);
 	});
 	const codeBlock: HTMLElement = createButton('Code Block', () => {
 		const defaultText = '\n```javascript\nconst foo = bar;\n```';
 		const start = '\n```javascript\n';
 		const end = '\n```';
-		handleFormatting(defaultText, start, end);
+		handleBlockFormatting(defaultText, start, end);
 	});
 
 	// Add buttons to toolbar
@@ -86,6 +102,7 @@ function createToolbar(): HTMLElement {
 		],
 		// Blocks
 		[
+			spoiler,
 			textBlock,
 			codeBlock,
 		],
