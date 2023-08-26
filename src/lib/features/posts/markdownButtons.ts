@@ -31,6 +31,16 @@ function handleFormatting(defaultText: string, start: string, end: string | bool
 	}
 }
 
+function handleBlockFormatting(defaultText: string, start: string, end: string | boolean = false): void {
+	const selection = window.getSelection();
+	if (selection.anchorNode === replyBox && selection.type === 'Range') {
+		textarea.setRangeText(`${start}${selection.toString()}${end}`);
+	}
+	else {
+		insertText(defaultText);
+	}
+}
+
 function createButton(text: string, cb: () => void): HTMLElement {
 	const button = document.createElement('button');
 	button.setAttribute('type', 'button');
@@ -50,17 +60,18 @@ function createToolbar(): HTMLElement {
 	const monospace: HTMLElement = createButton('Monospace', () => handleFormatting('`Monospace` ', '`', '`'));
 	const link: HTMLElement = createButton('Link', () => insertText('[Link text](https://example.com) '));
 	const image: HTMLElement = createButton('Image', () => insertText('![Alt text](https://example.com/image.png) '));
+	const spoiler: HTMLElement = createButton('Spoiler', () => handleBlockFormatting('<spoiler>\n\n</spoiler>', '<spoiler>\n', '\n</spoiler>'));
 	const textBlock: HTMLElement = createButton('Text Block', () => {
 		const defaultText = '\n```\nText Block\n```';
 		const start = '\n```\n';
 		const end = '\n```';
-		handleFormatting(defaultText, start, end);
+		handleBlockFormatting(defaultText, start, end);
 	});
 	const codeBlock: HTMLElement = createButton('Code Block', () => {
 		const defaultText = '\n```javascript\nconst foo = bar;\n```';
 		const start = '\n```javascript\n';
 		const end = '\n```';
-		handleFormatting(defaultText, start, end);
+		handleBlockFormatting(defaultText, start, end);
 	});
 
 	// Add buttons to toolbar
@@ -86,6 +97,7 @@ function createToolbar(): HTMLElement {
 		],
 		// Blocks
 		[
+			spoiler,
 			textBlock,
 			codeBlock,
 		],
