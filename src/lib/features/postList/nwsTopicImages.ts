@@ -1,6 +1,7 @@
 import logDebugMessage from '~lib/logs/debug';
 import createFeature from '../feature';
 import { CSS_PREFIX } from '~constants';
+import insertStyles from '~lib/insertStyles';
 
 const className = `${CSS_PREFIX}hidden-nws-elements`;
 
@@ -32,10 +33,8 @@ export default createFeature(
 			const selector = '.post .message-contents img, .post .message-contents video';
 
 			// We're in a NWS or NLS topic
-			const styles = document.createElement('style');
-			styles.innerHTML = `${selector} { display: none }`;
-			styles.id = `${CSS_PREFIX}hide-nws-media`;
-			document.head.insertAdjacentElement('beforeend', styles);
+			const rules = `${selector} { display: none }`;
+			insertStyles(`${CSS_PREFIX}hide-media`, rules);
 
 			const elements: NodeListOf<HTMLElement> = document.querySelectorAll(selector);
 			replaceElements(elements);

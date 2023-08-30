@@ -1,6 +1,7 @@
 import logDebugMessage from '~lib/logs/debug';
 import createFeature from '../feature';
 import { CSS_PREFIX } from '~constants';
+import insertStyles from '~lib/insertStyles';
 
 let cursorPosition: number | null = null;
 const replyBox: HTMLElement = document.querySelector('.reply-form-inner');
@@ -163,9 +164,6 @@ export default createFeature(
 		.${CSS_PREFIX}markdown-buttons > button:last-of-type {
 			margin-right: 0;
 		}`;
-		const element = document.createElement('style');
-		element.innerHTML = rules;
-		element.id = `${CSS_PREFIX}markdown-button-styles`;
-		document.head.insertAdjacentElement('beforeend', element);
+		insertStyles(`${CSS_PREFIX}markdown-button-styles`, rules);
 	},
 );
