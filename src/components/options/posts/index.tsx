@@ -103,16 +103,6 @@ export default function PostsOptions() {
 
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Embed Twitter links</p>
-				</div>
-				<Switch
-					onChange={(checked: boolean) => setEmbedTwitter({ ...embedTwitter, enabled: checked })}
-					checked={embedTwitter.enabled}
-				/>
-			</fieldset>
-
-			<fieldset className={style.fieldset}>
-				<div className={`${style.group} ${style.small}`}>
 					<p className={style.label}>Replace images & videos <u>only</u> in NWS/NLS topics with text-only links</p>
 					<p className={style.description}>Before using this feature, change your <a href="https://websight.blue/account/display" target="_blank">image display settings</a> to "normal" or "thumbnailed"</p>
 					<p className={`${style.description} ${style.danger}`}>WARNING! While loading a thread, there may be a brief flash of images before the extension can remove them. Use this feature at your own discretion!</p>
