@@ -58,6 +58,7 @@ function createToolbar(): HTMLElement {
 	const bold: HTMLElement = createButton('Bold', () => handleTextFormatting('*Bolded text* ', '*', '*'));
 	const italics: HTMLElement = createButton('Italics', () => handleTextFormatting('_Italicized text_ ', '_', '_'));
 	const quote: HTMLElement = createButton('Quote', () => handleTextFormatting('> Quoted text', '> ', false, false));
+	const strikethrough: HTMLElement = createButton('Strikethrough', () => handleTextFormatting('~~Strikethrough~~', '~~', '~~', false));
 	const monospace: HTMLElement = createButton('Monospace', () => handleTextFormatting('`Monospace` ', '`', '`'));
 	const link: HTMLElement = createButton('Link', () => insertText('[Link text](https://example.com) '));
 	const image: HTMLElement = createButton('Image', () => insertText('![Alt text](https://example.com/image.png) '));
@@ -94,6 +95,7 @@ function createToolbar(): HTMLElement {
 			bold,
 			italics,
 			quote,
+			strikethrough,
 			monospace,
 		],
 		// Embeds
