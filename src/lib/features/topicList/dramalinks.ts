@@ -144,8 +144,9 @@ async function initializeDramalinks() {
 export default createFeature(
 	'dramalinks',
 	async () => {
-		logDebugMessage('Feature Enabled: Dramalinks ticker');
-
-		initializeDramalinks();
+		if (window.location.origin.includes('https://lue.')) {
+			logDebugMessage('Feature Enabled: Dramalinks ticker for LUE');
+			initializeDramalinks();
+		}
 	},
 );
