@@ -43,7 +43,7 @@ async function executeFeature(feature: Feature, isMutationExecution = false, nod
 			if (!isMutationExecution) {
 				feature.execute();
 			}
-			else {
+			else if (isMutationExecution && feature.executeOnNewPost !== undefined) {
 				feature.executeOnNewPost(node as HTMLElement);
 			}
 		}
