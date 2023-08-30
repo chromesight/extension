@@ -21,7 +21,7 @@ const toggleReplyArea = () => {
 export default createFeature(
 	'hideReplyArea',
 	async () => {
-		logDebugMessage('Feature Enabled: Hide reply box until keyboard shortcut activated');
+		logDebugMessage('Feature Enabled: Hide reply box until backtick');
 
 		const links = document.querySelectorAll(quoteLinkSelector);
 		links.forEach(link => link.addEventListener('click', showReplyArea));

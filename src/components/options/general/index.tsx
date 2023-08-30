@@ -29,7 +29,7 @@ export default function GeneralOptions() {
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
 					<p className={style.label}>Dramalinks ticker</p>
-					<p className={style.description}>Display dramalinks ticker for LUE in the topic list</p>
+					<p className={style.description}>Display LUE dramalinks ticker in the topic list</p>
 				</div>
 				<Switch
 					onChange={(checked: boolean) => setDramalinks({ ...dramalinks, enabled: checked })}
