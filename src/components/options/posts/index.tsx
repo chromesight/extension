@@ -82,7 +82,7 @@ export default function PostsOptions() {
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
 					<p className={style.label}>Markdown buttons</p>
-					<p className={style.description}>Adds markdown formatting buttons above the reply box</p>
+					<p className={style.description}>Adds markdown formatting buttons to post textareas (reply and edit)</p>
 				</div>
 				<Switch
 					onChange={(checked: boolean) => setMarkdownButtons({ ...markdownButtons, enabled: checked })}

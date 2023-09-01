@@ -1,12 +1,6 @@
 import logDebugMessage from '~lib/logs/debug';
 import createFeature from '../feature';
-
-function getUserId(topicBar) {
-	const userProfile = topicBar.querySelector('a:first-of-type');
-	const regex = new RegExp(/\/profile\/(.*)/);
-	const userId = userProfile.href.match(regex)[1];
-	return userId;
-}
+import getUserId from '~lib/getUserIdFromTopicBar';
 
 function getTopicId() {
 	const topic: HTMLElement = document.querySelector('.post');
@@ -19,7 +13,7 @@ export default createFeature(
 	async () => {
 		logDebugMessage('Feature Enabled: Filter me');
 
-		const topicBar = document.querySelector('.userbar:nth-of-type(n+2)');
+		const topicBar: HTMLElement = document.querySelector('.userbar:nth-of-type(n+2)');
 		const topicId = getTopicId();
 		const userId = getUserId(topicBar);
 
