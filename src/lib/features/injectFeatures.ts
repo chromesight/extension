@@ -34,7 +34,7 @@ function executeFeatures(features: Array<Feature>) {
 	}
 }
 
-// Determine whether a feature should execute
+// Execute feature either for page load or on mutation, if the feature is enabled
 async function executeFeature(feature: Feature, isMutationExecution = false, node?: Node) {
 	try {
 		const { enabled } = await getFeatureSettings(feature.settingsKey);
@@ -43,7 +43,7 @@ async function executeFeature(feature: Feature, isMutationExecution = false, nod
 			if (!isMutationExecution) {
 				feature.execute();
 			}
-			else {
+			else if (isMutationExecution && feature.executeOnNewPost !== undefined) {
 				feature.executeOnNewPost(node as HTMLElement);
 			}
 		}
@@ -64,18 +64,19 @@ async function getFeatureSettings(key: string): Promise<FeatureSettings> {
 function handleNewPost(mutations: MutationRecord[], features: Feature[]) {
 	const className = `${CSS_PREFIX}mutated`;
 	for (const mutation of mutations) {
-		// Target any new nodes, exclusively, if any exist
+		// Target any new posts added
 		if (mutation.addedNodes.length) {
 			for (const addedNode of mutation.addedNodes as NodeListOf<HTMLElement>) {
-				if (addedNode.classList.contains(className)) continue;
 				// Check if the added node is a normal HTML tag, otherwise, we can skip it
-
 				if (!(addedNode as HTMLElement).tagName) continue;
 
+				// Check if we've already mutated the node
+				if (addedNode.classList.contains(className)) continue;
+
+				// Execute feature on the new post and mark it as mutated
 				for (const feature of features) {
 					executeFeature(feature, true, addedNode);
 				}
-
 				addedNode.classList.add(className);
 			}
 		}

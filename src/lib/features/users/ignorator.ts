@@ -3,9 +3,10 @@ import createFeature from '../feature';
 import { Storage } from '@plasmohq/storage';
 import type { IgnoratorSettings } from '~components/options/users';
 import { CSS_PREFIX } from '~constants';
+import insertStyles, { type styleId } from '~lib/insertStyles';
 
 const storageKey = 'ignorator';
-const stylesId = `${CSS_PREFIX}ignorator-styles`;
+const stylesId: styleId = `${CSS_PREFIX}ignorator`;
 
 export async function removeUserFromIgnorator(userId: string) {
 	const storage = new Storage();
@@ -94,11 +95,7 @@ export default createFeature(
 		}).filter(selector => selector !== '');
 
 		const rules = `${selectors.join(',')} { display: none }`;
-		const element = document.createElement('style');
-		element.innerText = rules;
-		element.id = stylesId;
-
-		document.head.insertAdjacentElement('beforeend', element);
+		insertStyles(stylesId, rules);
 
 		// Add a link to ignorate a user to all posts
 		const posts = document.querySelectorAll('.post');

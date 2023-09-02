@@ -3,6 +3,7 @@ import createFeature from '../feature';
 import { Storage } from '@plasmohq/storage';
 import { CSS_PREFIX } from '~constants';
 import type { DramalinksSettings } from '~components/options/general';
+import insertStyles from '~lib/insertStyles';
 
 type DramalinksQuery = {
 	items: string[];
@@ -136,18 +137,16 @@ async function initializeDramalinks() {
 		#${CSS_PREFIX}dramalinks-ticker.${CSS_PREFIX}right {
 			text-align: right;
 		}`;
-		const styles = document.createElement('style');
-		styles.innerHTML = rules;
-		styles.id = `${CSS_PREFIX}dramalinks-styles`;
-		document.head.insertAdjacentElement('beforeend', styles);
+		insertStyles(`${CSS_PREFIX}dramalinks`, rules);
 	}
 }
 
 export default createFeature(
 	'dramalinks',
 	async () => {
-		logDebugMessage('Feature Enabled: Dramalinks ticker');
-
-		initializeDramalinks();
+		if (window.location.origin.includes('https://lue.')) {
+			logDebugMessage('Feature Enabled: Dramalinks ticker for LUE');
+			initializeDramalinks();
+		}
 	},
 );

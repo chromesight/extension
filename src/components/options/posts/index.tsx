@@ -19,6 +19,7 @@ export default function PostsOptions() {
 	const [nwsTopicImages, setNwsTopicImages] = useStorage<FeatureSettings>('nwsTopicImages', defaultSettings);
 	const [embedTwitter, setEmbedTwitter] = useStorage<EmbedTwitterSettings>('embedTwitter', v => v === undefined ? { enabled: false, theme: 'dark' } : v);
 	const [markdownButtons, setMarkdownButtons] = useStorage<FeatureSettings>('markdownButtons', defaultSettings);
+	const [hideReplyArea, setHideReplyArea] = useStorage<FeatureSettings>('hideReplyArea', defaultSettings);
 
 	return (
 		<div className={style.group} id="posts">
@@ -81,11 +82,22 @@ export default function PostsOptions() {
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
 					<p className={style.label}>Markdown buttons</p>
-					<p className={style.description}>Adds markdown formatting buttons above the reply box</p>
+					<p className={style.description}>Adds markdown formatting buttons to post textareas (reply and edit)</p>
 				</div>
 				<Switch
 					onChange={(checked: boolean) => setMarkdownButtons({ ...markdownButtons, enabled: checked })}
 					checked={markdownButtons.enabled}
+				/>
+			</fieldset>
+
+			<fieldset className={style.fieldset}>
+				<div className={`${style.group} ${style.small}`}>
+					<p className={style.label}>Hide reply area</p>
+					<p className={style.description}>Toggle visibility of reply area with backtick (`) button</p>
+				</div>
+				<Switch
+					onChange={(checked: boolean) => setHideReplyArea({ ...hideReplyArea, enabled: checked })}
+					checked={hideReplyArea.enabled}
 				/>
 			</fieldset>
 

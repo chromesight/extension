@@ -5,6 +5,7 @@ import autoRedirect from './autoRedirect';
 import autoScroll from './autoScroll';
 import embedTwitter from './embedTwitter';
 import filterMe from './filterMe';
+import hideReplyArea from './hideReplyArea';
 import markTopicCreator from './markTopicCreator';
 import markdownButtons from './markdownButtons';
 import nwsTopicImages from './nwsTopicImages';
@@ -21,6 +22,7 @@ const features: Feature[] = [
 	filterMe,
 	embedTwitter,
 	markdownButtons,
+	hideReplyArea,
 ];
 
 export default features;

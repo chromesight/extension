@@ -3,6 +3,7 @@ import createFeature from '../feature';
 import { Storage } from '@plasmohq/storage';
 import { CSS_PREFIX } from '~constants';
 import type { HighlighterSettings } from '~components/options/users';
+import insertStyles from '~lib/insertStyles';
 
 const storageKey = 'highlighter';
 
@@ -30,15 +31,12 @@ export default createFeature(
 
 		const storage = new Storage();
 		const { users }: HighlighterSettings = await storage.get(storageKey);
-		const styles = Object.keys(users).map(user => {
+		const rules = Object.keys(users).map(user => {
 			const parsedUserId = user.replaceAll('+', ' ');
 			const { backgroundColor, textColor } = users[user];
-			const rules = `.grid tr[data-user="${user}"] td, .grid tr[id*="${parsedUserId}"] td, .post[data-user="${user}"] .message-top, .msg-quote[data-user="${user}"] > p:first-of-type { background-color: ${backgroundColor} !important; color: ${textColor} } .grid tr[data-user="${user}"] a, .grid tr[id*="${parsedUserId}"] a, .post[data-user="${user}"] .message-top a, .post[data-user="${user}"] .message-top .user-icon, .msg-quote[data-user="${user}"] > p:first-of-type a { color: ${textColor} }`;
-			return rules;
+			const userRule = `.grid tr[data-user="${user}"] td, .grid tr[id*="${parsedUserId}"] td, .post[data-user="${user}"] .message-top, .msg-quote[data-user="${user}"] > p:first-of-type { background-color: ${backgroundColor} !important; color: ${textColor} } .grid tr[data-user="${user}"] a, .grid tr[id*="${parsedUserId}"] a, .post[data-user="${user}"] .message-top a, .post[data-user="${user}"] .message-top .user-icon, .msg-quote[data-user="${user}"] > p:first-of-type a { color: ${textColor} }`;
+			return userRule;
 		});
-		const element = document.createElement('style');
-		element.innerHTML = styles.join(' ');
-		element.id = `${CSS_PREFIX}highlighter-styles`;
-		document.head.insertAdjacentElement('beforeend', element);
+		insertStyles(`${CSS_PREFIX}highlighter`, rules.join(' '));
 	},
 );

@@ -5,6 +5,7 @@ import { Storage } from '@plasmohq/storage';
 import { sendToBackground } from '@plasmohq/messaging';
 import { CSS_PREFIX } from '~constants';
 import type { EmbedTwitterSettings } from '~components/options/posts';
+import insertStyles from '~lib/insertStyles';
 
 let theme = 'dark';
 
@@ -90,10 +91,7 @@ export default createFeature(
 		.twitter-tweet[data-theme="dark"]::after {
 			opacity: .15;
 		}`;
-		const element = document.createElement('style');
-		element.innerHTML = rules;
-		element.id = `${CSS_PREFIX}twitter-embed-styles`;
-		document.head.insertAdjacentElement('beforeend', element);
+		insertStyles(`${CSS_PREFIX}twitter-embed`, rules);
 
 		const links = document.querySelectorAll('.message-contents p a[href*="twitter.com"]');
 		handleLinks(links);
