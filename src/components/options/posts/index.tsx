@@ -10,6 +10,12 @@ export type EmbedTwitterSettings = {
 	theme: string;
 }
 
+export type ResizableImagesSettings = {
+	enabled: boolean;
+	maxWidth: string;
+	initialWidth: string;
+}
+
 export default function PostsOptions() {
 	const [postNumbers, setPostNumbers] = useStorage<FeatureSettings>('postNumbers', defaultSettings);
 	const [filterMe, setFilterMe] = useStorage<FeatureSettings>('filterMe', defaultSettings);
@@ -20,6 +26,7 @@ export default function PostsOptions() {
 	const [embedTwitter, setEmbedTwitter] = useStorage<EmbedTwitterSettings>('embedTwitter', v => v === undefined ? { enabled: false, theme: 'dark' } : v);
 	const [markdownButtons, setMarkdownButtons] = useStorage<FeatureSettings>('markdownButtons', defaultSettings);
 	const [hideReplyArea, setHideReplyArea] = useStorage<FeatureSettings>('hideReplyArea', defaultSettings);
+	const [resizableImages, setResizableImages] = useStorage<ResizableImagesSettings>('resizableImages', v => v === undefined ? { enabled: false, maxWidth: '100', initialWidth: '33' } : v);
 
 	return (
 		<div className={style.group} id="posts">
@@ -111,6 +118,45 @@ export default function PostsOptions() {
 					onChange={(checked: boolean) => setNwsTopicImages({ ...nwsTopicImages, enabled: checked })}
 					checked={nwsTopicImages.enabled}
 				/>
+			</fieldset>
+
+			<fieldset className={style.fieldset}>
+				<div className={`${style.group} ${style.small}`}>
+					<p className={style.label}>Resizable images</p>
+					<p className={style.description}>Resize images by dragging them</p>
+				</div>
+				<Switch
+					onChange={(checked: boolean) => setResizableImages({ ...resizableImages, enabled: checked })}
+					checked={resizableImages.enabled}
+				/>
+			</fieldset>
+
+			<fieldset className={style.fieldset} style={{ marginLeft: 28 }}>
+				<div className={`${style.group} ${style.small}`}>
+					<p className={style.label}>Initial width</p>
+				</div>
+				<div className={style.width}>
+					<input
+						type="text"
+						defaultValue={resizableImages.initialWidth}
+						onBlur={e => setResizableImages({ ...resizableImages, initialWidth: e.target.value })}
+						maxLength={3}
+					/>
+				</div>
+			</fieldset>
+
+			<fieldset className={style.fieldset} style={{ marginLeft: 28 }}>
+				<div className={`${style.group} ${style.small}`}>
+					<p className={style.label}>Maximum width</p>
+				</div>
+				<div className={style.width}>
+					<input
+						type="text"
+						defaultValue={resizableImages.maxWidth}
+						onBlur={e => setResizableImages({ ...resizableImages, maxWidth: e.target.value })}
+						maxLength={3}
+					/>
+				</div>
 			</fieldset>
 
 			<fieldset className={style.fieldset}>

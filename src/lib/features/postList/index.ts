@@ -10,6 +10,7 @@ import markTopicCreator from './markTopicCreator';
 import markdownButtons from './markdownButtons';
 import nwsTopicImages from './nwsTopicImages';
 import postNumbers from './postNumbers';
+import resizeableImages from './resizeableImages';
 
 const features: Feature[] = [
 	nwsTopicImages,
@@ -23,6 +24,7 @@ const features: Feature[] = [
 	embedTwitter,
 	markdownButtons,
 	hideReplyArea,
+	resizeableImages,
 ];
 
 export default features;

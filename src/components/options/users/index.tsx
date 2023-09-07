@@ -54,7 +54,7 @@ export default function UsersOptions() {
 				<h3 className={style.heading}>Ignorator</h3>
 				<fieldset className={style.fieldset}>
 					<div className={`${style.group} ${style.small}`}>
-						<p className={style.label}>Ignorator</p>
+						<p className={style.label}>Ignorated users</p>
 						<p className={style.description}>Hide topics and posts from users listed below</p>
 					</div>
 					<Switch
@@ -69,7 +69,7 @@ export default function UsersOptions() {
 				<h3 className={style.heading}>Highlighter</h3>
 				<fieldset className={style.fieldset}>
 					<div className={`${style.group} ${style.small}`}>
-						<p className={style.label}>Highlighter</p>
+						<p className={style.label}>Highlighted users</p>
 						<p className={style.description}>Highlight topics and posts from users listed below</p>
 					</div>
 					<Switch
