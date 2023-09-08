@@ -26,7 +26,7 @@ export default function PostsOptions() {
 	const [embedTwitter, setEmbedTwitter] = useStorage<EmbedTwitterSettings>('embedTwitter', v => v === undefined ? { enabled: false, theme: 'dark' } : v);
 	const [markdownButtons, setMarkdownButtons] = useStorage<FeatureSettings>('markdownButtons', defaultSettings);
 	const [hideReplyArea, setHideReplyArea] = useStorage<FeatureSettings>('hideReplyArea', defaultSettings);
-	const [resizableImages, setResizableImages] = useStorage<ResizableImagesSettings>('resizableImages', v => v === undefined ? { enabled: false, maxWidth: '100', initialWidth: '33' } : v);
+	const [resizableImages, setResizableImages] = useStorage<FeatureSettings>('resizableImages', defaultSettings);
 
 	return (
 		<div className={style.group} id="posts">
@@ -129,34 +129,6 @@ export default function PostsOptions() {
 					onChange={(checked: boolean) => setResizableImages({ ...resizableImages, enabled: checked })}
 					checked={resizableImages.enabled}
 				/>
-			</fieldset>
-
-			<fieldset className={style.fieldset} style={{ marginLeft: 28 }}>
-				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Initial width</p>
-				</div>
-				<div className={style.width}>
-					<input
-						type="text"
-						defaultValue={resizableImages.initialWidth}
-						onBlur={e => setResizableImages({ ...resizableImages, initialWidth: e.target.value })}
-						maxLength={3}
-					/>
-				</div>
-			</fieldset>
-
-			<fieldset className={style.fieldset} style={{ marginLeft: 28 }}>
-				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Maximum width</p>
-				</div>
-				<div className={style.width}>
-					<input
-						type="text"
-						defaultValue={resizableImages.maxWidth}
-						onBlur={e => setResizableImages({ ...resizableImages, maxWidth: e.target.value })}
-						maxLength={3}
-					/>
-				</div>
 			</fieldset>
 
 			<fieldset className={style.fieldset}>
