@@ -10,6 +10,12 @@ export type EmbedTwitterSettings = {
 	theme: string;
 }
 
+export type ResizableImagesSettings = {
+	enabled: boolean;
+	maxWidth: string;
+	initialWidth: string;
+}
+
 export default function PostsOptions() {
 	const [postNumbers, setPostNumbers] = useStorage<FeatureSettings>('postNumbers', defaultSettings);
 	const [filterMe, setFilterMe] = useStorage<FeatureSettings>('filterMe', defaultSettings);
@@ -20,6 +26,7 @@ export default function PostsOptions() {
 	const [embedTwitter, setEmbedTwitter] = useStorage<EmbedTwitterSettings>('embedTwitter', v => v === undefined ? { enabled: false, theme: 'dark' } : v);
 	const [markdownButtons, setMarkdownButtons] = useStorage<FeatureSettings>('markdownButtons', defaultSettings);
 	const [hideReplyArea, setHideReplyArea] = useStorage<FeatureSettings>('hideReplyArea', defaultSettings);
+	const [resizableImages, setResizableImages] = useStorage<FeatureSettings>('resizableImages', defaultSettings);
 
 	return (
 		<div className={style.group} id="posts">
@@ -103,8 +110,19 @@ export default function PostsOptions() {
 
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
+					<p className={style.label}>Drag images to resize</p>
+					<p className={style.description}><span className={style.danger}>Required!</span> Change your <a href="https://websight.blue/account/display" target="_blank">image display settings</a> to "normal"</p>
+				</div>
+				<Switch
+					onChange={(checked: boolean) => setResizableImages({ ...resizableImages, enabled: checked })}
+					checked={resizableImages.enabled}
+				/>
+			</fieldset>
+
+			<fieldset className={style.fieldset}>
+				<div className={`${style.group} ${style.small}`}>
 					<p className={style.label}>Replace images & videos <u>only</u> in NWS/NLS topics with text-only links</p>
-					<p className={style.description}>Before using this feature, change your <a href="https://websight.blue/account/display" target="_blank">image display settings</a> to "normal" or "thumbnailed"</p>
+					<p className={style.description}><span className={style.danger}>Required!</span> Change your <a href="https://websight.blue/account/display" target="_blank">image display settings</a> to "normal" or "thumbnailed"</p>
 					<p className={`${style.description} ${style.danger}`}>WARNING! While loading a thread, there may be a brief flash of images before the extension can remove them. Use this feature at your own discretion!</p>
 				</div>
 				<Switch

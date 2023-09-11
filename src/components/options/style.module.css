@@ -49,7 +49,7 @@
     letter-spacing: .01px;
 }
 
-.description.danger {
+.danger {
     color: #c90c0c;
     font-weight: 700;
 }
@@ -65,6 +65,33 @@
     color: rgba(0,0,0,.6);
 }
 
+.width {
+    display: flex;
+}
+
+.width > input[type=text] {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    max-width: 66px;
+}
+
+.width::after {
+    content: '%';
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    padding: 8px;
+    color: #ffffffe3;
+    font-weight: 900;
+    font-size: 12px;
+    background-color: #313131;
+    border: 1px solid #ffffff1a;
+    border-left: 0;
+    border-radius: 4px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
 @media (prefers-color-scheme: dark) {
     .group {
         border-color: rgba(255,255,255,.1);
@@ -72,7 +99,7 @@
     .description {
         color: rgba(255,255,255,.5);
     }
-    .description.danger {
+    .danger {
         color: #ff4d4d;
     }
     .label a:hover,

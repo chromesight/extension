@@ -5,6 +5,7 @@ import GeneralOptions from '~components/options/general';
 import PostsOptions from '~components/options/posts';
 import UsersOptions from '~components/options/users';
 import AboutOptions from '~components/options/about';
+import TopicsOptions from '~components/options/topics';
 
 function IndexOptions() {
 	return (
@@ -16,6 +17,9 @@ function IndexOptions() {
 						<ul className={style.list}>
 							<li>
 								<a href="#general">General</a>
+							</li>
+							<li>
+								<a href="#topic">Topics</a>
 							</li>
 							<li>
 								<a href="#posts">Posts</a>
@@ -35,6 +39,7 @@ function IndexOptions() {
 					<div className={style.content}>
 						<h2 className={style.title}>Settings</h2>
 						<GeneralOptions />
+						<TopicsOptions />
 						<PostsOptions />
 						<UsersOptions />
 						<AboutOptions />

@@ -126,7 +126,6 @@ function createToolbar(target): HTMLElement {
 function createPostEditToolbars() {
 	const userId = getUserId();
 	const postEditContainers = document.querySelectorAll(`.post[data-user="${userId}"] div[id*="post-edit-"]`);
-	console.log(postEditContainers);
 	const config = { childList: true };
 	postEditContainers.forEach(element => {
 		const observer = new MutationObserver((mutationList) => {
