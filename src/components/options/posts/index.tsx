@@ -110,24 +110,24 @@ export default function PostsOptions() {
 
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Replace images & videos <u>only</u> in NWS/NLS topics with text-only links</p>
-					<p className={style.description}>Before using this feature, change your <a href="https://websight.blue/account/display" target="_blank">image display settings</a> to "normal" or "thumbnailed"</p>
-					<p className={`${style.description} ${style.danger}`}>WARNING! While loading a thread, there may be a brief flash of images before the extension can remove them. Use this feature at your own discretion!</p>
+					<p className={style.label}>Drag images to resize</p>
+					<p className={style.description}><span className={style.danger}>Required!</span> Change your <a href="https://websight.blue/account/display" target="_blank">image display settings</a> to "normal"</p>
 				</div>
 				<Switch
-					onChange={(checked: boolean) => setNwsTopicImages({ ...nwsTopicImages, enabled: checked })}
-					checked={nwsTopicImages.enabled}
+					onChange={(checked: boolean) => setResizableImages({ ...resizableImages, enabled: checked })}
+					checked={resizableImages.enabled}
 				/>
 			</fieldset>
 
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Resizable images</p>
-					<p className={style.description}>Resize images by dragging them</p>
+					<p className={style.label}>Replace images & videos <u>only</u> in NWS/NLS topics with text-only links</p>
+					<p className={style.description}><span className={style.danger}>Required!</span> Change your <a href="https://websight.blue/account/display" target="_blank">image display settings</a> to "normal" or "thumbnailed"</p>
+					<p className={`${style.description} ${style.danger}`}>WARNING! While loading a thread, there may be a brief flash of images before the extension can remove them. Use this feature at your own discretion!</p>
 				</div>
 				<Switch
-					onChange={(checked: boolean) => setResizableImages({ ...resizableImages, enabled: checked })}
-					checked={resizableImages.enabled}
+					onChange={(checked: boolean) => setNwsTopicImages({ ...nwsTopicImages, enabled: checked })}
+					checked={nwsTopicImages.enabled}
 				/>
 			</fieldset>
 

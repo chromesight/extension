@@ -49,7 +49,7 @@
     letter-spacing: .01px;
 }
 
-.description.danger {
+.danger {
     color: #c90c0c;
     font-weight: 700;
 }
@@ -99,7 +99,7 @@
     .description {
         color: rgba(255,255,255,.5);
     }
-    .description.danger {
+    .danger {
         color: #ff4d4d;
     }
     .label a:hover,
