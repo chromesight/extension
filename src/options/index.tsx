@@ -19,7 +19,7 @@ function IndexOptions() {
 								<a href="#general">General</a>
 							</li>
 							<li>
-								<a href="#topic">Topics</a>
+								<a href="#topics">Topics</a>
 							</li>
 							<li>
 								<a href="#posts">Posts</a>
