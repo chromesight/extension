@@ -93,11 +93,11 @@ export default createFeature(
 		}`;
 		insertStyles(`${CSS_PREFIX}twitter-embed`, rules);
 
-		const links = document.querySelectorAll('.message-contents p a[href*="twitter.com"]');
+		const links = document.querySelectorAll('.message-contents p a[href*="twitter.com"],.message-contents p a[href*="x.com"]');
 		handleLinks(links);
 	},
 	async (addedNode) => {
-		const links = addedNode.querySelectorAll('.message-contents p a[href*="twitter.com"]');
+		const links = addedNode.querySelectorAll('.message-contents p a[href*="twitter.com"],.message-contents p a[href*="x.com"]');
 		handleLinks(links);
 	},
 );
