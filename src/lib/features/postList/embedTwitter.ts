@@ -9,7 +9,7 @@ import insertStyles from '~lib/insertStyles';
 
 let theme = 'dark';
 
-async function fetchEmbed(url) {
+async function fetchEmbed(url: string) {
 	const response = await sendToBackground({
 		name: 'fetch',
 		body: {
@@ -19,16 +19,15 @@ async function fetchEmbed(url) {
 	return response;
 }
 
-async function handleLinks(links) {
-	const promises = [...links]
-		.filter(link => link.href.includes('/status/'))
-		.map(async link => {
+async function handleLinks(links: NodeList) {
+	[...links]
+		.filter((link: HTMLLinkElement) => link.href.includes('/status/'))
+		.forEach(async (link: HTMLLinkElement) => {
 			const embed = await fetchEmbed(link.href.replace('x.com', 'twitter.com'));
 			if (embed) {
 				link.insertAdjacentHTML('afterend', embed.html);
 			}
 		});
-	await Promise.all(promises);
 }
 
 export default createFeature(
@@ -91,7 +90,7 @@ export default createFeature(
 		.twitter-tweet[data-theme="dark"]::after {
 			opacity: .15;
 		}`;
-		insertStyles(`${CSS_PREFIX}twitter-embed`, rules);
+		// insertStyles(`${CSS_PREFIX}twitter-embed`, rules);
 
 		const links = document.querySelectorAll('.message-contents p a[href*="twitter.com"], .message-contents p a[href*="x.com"]');
 		handleLinks(links);
