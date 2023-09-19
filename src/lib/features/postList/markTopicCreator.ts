@@ -29,13 +29,17 @@ export default createFeature(
 		userId = await getTopicCreator();
 
 		const postHeaders = document.querySelectorAll(`.post[data-user="${userId}"] .message-top .post-author, .msg-quote[data-user="${userId}"] > p:first-of-type > a:first-of-type`);
-		postHeaders.forEach(handlePostHeader);
+		for (const postHeader of postHeaders) {
+			handlePostHeader(postHeader);
+		}
 	},
 	async (addedPost) => {
 		console.log(addedPost.dataset);
 		if (addedPost.dataset['user'] === userId) {
 			const postHeaders = addedPost.querySelectorAll(`.message-top .post-author, .msg-quote[data-user="${userId}"] > p:first-of-type > a:first-of-type`);
-			postHeaders.forEach(handlePostHeader);
+			for (const postHeader of postHeaders) {
+				handlePostHeader(postHeader);
+			}
 		}
 	},
 );
