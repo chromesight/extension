@@ -34,7 +34,6 @@ export default createFeature(
 		}
 	},
 	async (addedPost) => {
-		console.log(addedPost.dataset);
 		if (addedPost.dataset['user'] === userId) {
 			const postHeaders = addedPost.querySelectorAll(`.message-top .post-author, .msg-quote[data-user="${userId}"] > p:first-of-type > a:first-of-type`);
 			for (const postHeader of postHeaders) {
