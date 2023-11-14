@@ -3,7 +3,7 @@ window.addEventListener('message', (event) => {
 		return;
 	}
 
-	if (event.data.type && (event.data.type === 'load_twitter_widget')) {
+	if (event.data.type && (event.data.type === 'load_twitter_widgets')) {
 		const addedNode = document.getElementById(event.data.addedNodeId);
 		if (window.twttr.init) {
 			window.twttr.widgets.load(addedNode);

@@ -8,13 +8,6 @@ import newWidget from 'url:~assets/twitter/new-widget.js';
 
 let theme = 'dark';
 
-async function getCurrentTab() {
-  let queryOptions = { active: true, currentWindow: true };
-  // `tab` will either be a `tabs.Tab` instance or `undefined`.
-  let [tab] = await chrome.tabs.query(queryOptions);
-  return tab;
-}
-
 async function fetchEmbed(url) {
 	const response = await sendToBackground({
 		name: 'fetch',
@@ -25,7 +18,7 @@ async function fetchEmbed(url) {
 	return response;
 }
 
-async function insertTweets(links) {
+async function insertEmbeds(links: NodeListOf<HTMLAnchorElement>) {
 	[...links]
 		.filter(link => link.href.includes('/status/'))
 		.map(async link => {
@@ -55,12 +48,16 @@ export default createFeature(
 		twitternNewWJS.src = newWidget;
 		document.head.appendChild(twitternNewWJS);
 
-		const links = document.querySelectorAll('.message-contents p a[href*="twitter.com"], .message-contents p a[href*="x.com"]');
-		insertTweets(links);
+		const links: NodeListOf<HTMLAnchorElement> = document.querySelectorAll('.message-contents p a[href*="twitter.com"], .message-contents p a[href*="x.com"]');
+		insertEmbeds(links);
 	},
 	async (addedNode) => {
-		const links = addedNode.querySelectorAll('.message-contents p a[href*="twitter.com"], .message-contents p a[href*="x.com"]');
-		await insertTweets(links);
-		window.postMessage({ type: 'load_twitter_widget', addedNodeId: addedNode.id });
+		requestAnimationFrame(() => {
+			const links: NodeListOf<HTMLAnchorElement> = addedNode.querySelectorAll('.message-contents p a[href*="twitter.com"], .message-contents p a[href*="x.com"]');
+			insertEmbeds(links);
+			requestAnimationFrame(() => {
+				window.postMessage({ type: 'load_twitter_widgets', addedNodeId: addedNode.id });
+			});
+		});
 	},
 );

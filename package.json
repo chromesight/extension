@@ -39,10 +39,6 @@
     "host_permissions": [
       "https://*.websight.blue/*",
       "https://publish.twitter.com/*"
-    ],
-    "permissions": [
-      "scripting",
-      "activeTab"
     ]
   }
 }
