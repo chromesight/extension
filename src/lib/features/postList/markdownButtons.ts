@@ -62,21 +62,27 @@ function createToolbar(target): HTMLElement {
 	const link: HTMLElement = createButton('Link', () => insertText(target, '[Link text](https://example.com) '));
 	const image: HTMLElement = createButton('Image', () => insertText(target, '![Alt text](https://example.com/image.png) '));
 	const spoiler: HTMLElement = createButton('Spoiler', () => {
-		const defaultText = '<spoiler>\n\n</spoiler>';
 		const start = '<spoiler>\n';
 		const end = '\n</spoiler>';
+		const defaultText = `${start}${end}`;
+		handleBlockFormatting(target, defaultText, start, end);
+	});
+	const ascii: HTMLElement = createButton('ASCII', () => {
+		const start = '<ascii>\n';
+		const end = '\n</ascii>';
+		const defaultText = `${start}${end}`;
 		handleBlockFormatting(target, defaultText, start, end);
 	});
 	const textBlock: HTMLElement = createButton('Text Block', () => {
-		const defaultText = '\n```\nText Block\n```';
 		const start = '\n```\n';
 		const end = '\n```';
+		const defaultText = `${start}Text Block${end}`;
 		handleBlockFormatting(target, defaultText, start, end);
 	});
 	const codeBlock: HTMLElement = createButton('Code Block', () => {
-		const defaultText = '\n```javascript\nconst foo = bar;\n```';
 		const start = '\n```javascript\n';
 		const end = '\n```';
+		const defaultText = `${start}const foo = bar;${end}`;
 		handleBlockFormatting(target, defaultText, start, end);
 	});
 
@@ -107,6 +113,7 @@ function createToolbar(target): HTMLElement {
 			spoiler,
 			textBlock,
 			codeBlock,
+			ascii,
 		],
 	];
 	const toolbar = document.createElement('div');
