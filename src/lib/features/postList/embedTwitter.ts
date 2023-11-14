@@ -5,6 +5,7 @@ import { sendToBackground } from '@plasmohq/messaging';
 import type { EmbedTwitterSettings } from '~components/options/posts';
 import widget from 'url:~assets/twitter/widgets.js';
 import newWidget from 'url:~assets/twitter/new-widget.js';
+import { CSS_PREFIX } from '~constants';
 
 let theme = 'dark';
 
@@ -43,19 +44,23 @@ export default createFeature(
 		twitterWJS.src = widget;
 		document.head.appendChild(twitterWJS);
 
-		const twitternNewWJS = document.createElement('script');
-		twitternNewWJS.id = 'twitter-new-widget';
-		twitternNewWJS.src = newWidget;
-		document.head.appendChild(twitternNewWJS);
+		const eventListener = document.createElement('script');
+		eventListener.id = `${CSS_PREFIX}-twitter-listener`;
+		eventListener.src = newWidget;
+		document.head.appendChild(eventListener);
 
 		const links: NodeListOf<HTMLAnchorElement> = document.querySelectorAll('.message-contents p a[href*="twitter.com"], .message-contents p a[href*="x.com"]');
 		insertEmbeds(links);
 	},
 	async (addedNode) => {
+		// Hacky way of waiting for oembed markup to be added.
+		// Source: https://macarthur.me/posts/when-dom-updates-appear-to-be-asynchronous#option-2-fire-after-next-repaint
 		requestAnimationFrame(() => {
+			// Fires _before_ next repaint
 			const links: NodeListOf<HTMLAnchorElement> = addedNode.querySelectorAll('.message-contents p a[href*="twitter.com"], .message-contents p a[href*="x.com"]');
 			insertEmbeds(links);
 			requestAnimationFrame(() => {
+				// Fires after the next repaint
 				window.postMessage({ type: 'load_twitter_widgets', addedNodeId: addedNode.id });
 			});
 		});
