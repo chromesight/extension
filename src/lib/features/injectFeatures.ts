@@ -4,15 +4,8 @@ import type { Feature, FeatureSettings } from './feature';
 import { CSS_PREFIX } from '~constants';
 
 // Execute features when the browser is ready
-export default function injectFeatures(featureList: Array<Feature>) {
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', () => {
-			executeFeatures(featureList);
-		});
-	}
-	else {
-		executeFeatures(featureList);
-	}
+export default async function injectFeatures(featureList: Array<Feature>) {
+	executeFeatures(featureList);
 }
 
 // Execute feature one by one if any exist, as well as queue up features to execute when posts are added to the page

@@ -1,15 +1,21 @@
 import logDebugMessage from '~lib/logs/debug';
 import createFeature from '../feature';
-import logo from 'data-base64:~assets/twitter.png';
 import { Storage } from '@plasmohq/storage';
 import { sendToBackground } from '@plasmohq/messaging';
-import { CSS_PREFIX } from '~constants';
 import type { EmbedTwitterSettings } from '~components/options/posts';
-import insertStyles from '~lib/insertStyles';
+import widget from 'url:~assets/twitter/widgets.js';
+import newWidget from 'url:~assets/twitter/new-widget.js';
 
 let theme = 'dark';
 
-async function fetchEmbed(url: string) {
+async function getCurrentTab() {
+  let queryOptions = { active: true, currentWindow: true };
+  // `tab` will either be a `tabs.Tab` instance or `undefined`.
+  let [tab] = await chrome.tabs.query(queryOptions);
+  return tab;
+}
+
+async function fetchEmbed(url) {
 	const response = await sendToBackground({
 		name: 'fetch',
 		body: {
@@ -19,10 +25,10 @@ async function fetchEmbed(url: string) {
 	return response;
 }
 
-async function handleLinks(links: NodeList) {
+async function insertTweets(links) {
 	[...links]
-		.filter((link: HTMLLinkElement) => link.href.includes('/status/'))
-		.forEach(async (link: HTMLLinkElement) => {
+		.filter(link => link.href.includes('/status/'))
+		.map(async link => {
 			const embed = await fetchEmbed(link.href.replace('x.com', 'twitter.com'));
 			if (embed) {
 				link.insertAdjacentHTML('afterend', embed.html);
@@ -39,64 +45,22 @@ export default createFeature(
 		const settings:EmbedTwitterSettings = await storage.get('embedTwitter');
 		theme = settings.theme;
 
-		const rules = `
-		.twitter-tweet {
-			position: relative;
-			padding: 16px;
-			border: 1px solid #ffffff;
-			border-radius: 4px;
-			margin: 6px 0;
-			max-width: 470px;
-			background: #e4e4ee;
-			color: #1d1d1d;
-			overflow: hidden;
-			outline: 1px solid rgba(0,0,0,.3);
-		}
+		const twitterWJS = document.createElement('script');
+		twitterWJS.id = 'twitter-wjs';
+		twitterWJS.src = widget;
+		document.head.appendChild(twitterWJS);
 
-		.twitter-tweet > * {
-			position: relative;
-		}
-
-		.twitter-tweet a {
-			color: inherit;
-		}
-
-		.twitter-tweet p {
-			margin-top: 0;
-			line-height: 1.4;
-		}
-
-		.twitter-tweet[data-theme="dark"] {
-			background: #2c2c35;
-			border-color: #494953;
-			outline-color: rgba(0,0,0,.65);
-			color: #ffffff;
-		}
-
-		.twitter-tweet::before {
-			content: '';
-			position: absolute;
-			opacity: .1;
-			bottom: -5px;
-			right: 5px;
-			width: 80px;
-			height: 80px;
-			background: url("${logo}");
-			background-size: contain;
-			background-repeat: no-repeat;
-			background-position: bottom right;
-		}
-
-		.twitter-tweet[data-theme="dark"]::after {
-			opacity: .15;
-		}`;
-		// insertStyles(`${CSS_PREFIX}twitter-embed`, rules);
+		const twitternNewWJS = document.createElement('script');
+		twitternNewWJS.id = 'twitter-new-widget';
+		twitternNewWJS.src = newWidget;
+		document.head.appendChild(twitternNewWJS);
 
 		const links = document.querySelectorAll('.message-contents p a[href*="twitter.com"], .message-contents p a[href*="x.com"]');
-		handleLinks(links);
+		insertTweets(links);
 	},
 	async (addedNode) => {
 		const links = addedNode.querySelectorAll('.message-contents p a[href*="twitter.com"], .message-contents p a[href*="x.com"]');
-		handleLinks(links);
+		await insertTweets(links);
+		window.postMessage({ type: 'load_twitter_widget', addedNodeId: addedNode.id });
 	},
 );
