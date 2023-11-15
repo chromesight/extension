@@ -187,11 +187,21 @@ export default createFeature(
 			border-bottom-width: 0;
 			border-style: solid;
 			border-color: rgb(118, 118, 118);
-			width: ${textarea.offsetWidth}px;
+			width: 100%;
+		}
+		.reply-form-inner .${CSS_PREFIX}markdown-toolbar {
+			width: initial;
 		}
 		.message .${CSS_PREFIX}markdown-toolbar {
-			width: 40em;
 			max-width: 100%;
+		}
+		@media all and (min-width: 768px) {
+			.${CSS_PREFIX}markdown-toolbar {
+				width: ${textarea.offsetWidth}px;
+			}
+			.message .${CSS_PREFIX}markdown-toolbar {
+				width: 40em;
+			}
 		}
 		.${CSS_PREFIX}markdown-buttons {
 			margin-right: 6px;
