@@ -29,6 +29,8 @@ async function insertEmbeds(links: NodeListOf<HTMLAnchorElement>) {
 				requestAnimationFrame(() => {
 					// Wait for the markup to be inserted and rendered to the DOM. We do this to ensure the Twitter Widget script in the MAIN world won't attempt to load the tweet after the markup is inserted but before it's rendered. Sending a postMessage after inserting markup causes the event to fire before the markup has been rendered, so we wait for the animation frame.
 					window.postMessage({ type: 'load_twitter_widgets', id: link.closest('.message').id });
+
+					// The message listener is in contents/twitterEmbed.ts
 				});
 			}
 		});
@@ -48,10 +50,6 @@ export default createFeature(
 		twitterWJS.src = widget;
 		document.head.appendChild(twitterWJS);
 
-		const eventListener = document.createElement('script');
-		eventListener.id = `${CSS_PREFIX}-twitter-listener`;
-		eventListener.src = newWidget;
-		document.head.appendChild(eventListener);
 
 		// Hacky way of waiting for oembed markup to be added before firing message to main world to load twitter widget from markup.
 		// Source: https://macarthur.me/posts/when-dom-updates-appear-to-be-asynchronous#option-2-fire-after-next-repaint
