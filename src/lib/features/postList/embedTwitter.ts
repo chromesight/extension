@@ -47,10 +47,6 @@ export default createFeature(
 	async () => {
 		logDebugMessage('Feature Enabled: Embed Twitter links');
 
-		const storage = new Storage();
-		const settings:EmbedTwitterSettings = await storage.get('embedTwitter');
-		theme = settings.theme;
-
 		const id = 'twitter-wjs';
 		if (!document.getElementById(id)) {
 			const twitterWJS = document.createElement('script');
@@ -61,6 +57,10 @@ export default createFeature(
 
 		const rules = '.twitter-tweet { display: none; }';
 		insertStyles(`${CSS_PREFIX}twitter-embeds`, rules);
+
+		const storage = new Storage();
+		const settings:EmbedTwitterSettings = await storage.get('embedTwitter');
+		theme = settings.theme;
 
 		const links: NodeListOf<HTMLAnchorElement> = document.querySelectorAll('.message-contents p a[href*="twitter.com"], .message-contents p a[href*="x.com"]');
 		insertEmbeds(links);
