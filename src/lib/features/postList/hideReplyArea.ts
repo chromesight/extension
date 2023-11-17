@@ -1,7 +1,7 @@
 import logDebugMessage from '~lib/logs/debug';
 import createFeature from '../feature';
 
-const quoteLinkSelector = '.message-top > a[href*="/quote/"]';
+const quoteLinkSelector = '.message-top > a[href*="/quote/"], a[href*="#reply-area"]';
 const replyArea: HTMLElement = document.querySelector('#reply-area');
 const replyContent: HTMLTextAreaElement = replyArea.querySelector('#reply-content');
 
@@ -9,13 +9,24 @@ const showReplyArea = () => {
 	replyArea.style.display = 'inherit';
 	replyContent.focus();
 };
+
+const hideReplyArea = () => {
+	if (document.activeElement !== replyContent) {
+		replyArea.style.display = 'none';
+	}
+};
+
 const toggleReplyArea = () => {
 	if (replyArea.style.display === 'none') {
 		showReplyArea();
 	}
 	else {
-		replyArea.style.display = 'none';
+		hideReplyArea();
 	}
+};
+
+const handleToggleReplyArea = (event) => {
+	if (event.key === '`') toggleReplyArea();
 };
 
 export default createFeature(
@@ -23,11 +34,10 @@ export default createFeature(
 	async () => {
 		logDebugMessage('Feature Enabled: Hide reply box until backtick');
 
+		document.addEventListener('keydown', handleToggleReplyArea);
+
 		const links = document.querySelectorAll(quoteLinkSelector);
 		links.forEach(link => link.addEventListener('click', showReplyArea));
-		document.addEventListener('keydown', (event) => {
-			if (event.key === '`') toggleReplyArea();
-		});
 
 		replyArea.style.display = 'none';
 	},
