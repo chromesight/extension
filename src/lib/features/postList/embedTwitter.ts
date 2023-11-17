@@ -4,7 +4,7 @@ import { Storage } from '@plasmohq/storage';
 import { sendToBackground } from '@plasmohq/messaging';
 import type { EmbedTwitterSettings } from '~components/options/posts';
 import widget from 'url:~assets/twitter/widgets.js';
-import newWidget from 'url:~assets/twitter/new-widget.js';
+import insertStyles from '~lib/insertStyles';
 import { CSS_PREFIX } from '~constants';
 
 let theme = 'dark';
@@ -22,15 +22,21 @@ async function fetchEmbed(url) {
 async function insertEmbeds(links: NodeListOf<HTMLAnchorElement>) {
 	[...links]
 		.filter(link => link.href.includes('/status/'))
-		.map(async link => {
+		.forEach(async link => {
 			const embed = await fetchEmbed(link.href.replace('x.com', 'twitter.com'));
 			if (embed) {
-				link.insertAdjacentHTML('afterend', embed.html);
+				// Hacky way of waiting for oembed markup to be added before firing message to main world to load twitter widget from markup. Execution of requestAnimationFrame occurs before next repaint.  Nesting another requestAnimationFrame will fire it's callback  after next repaint (because it waits for the animation frame after the one we're waiting for to paint)
+				// Source: https://macarthur.me/posts/when-dom-updates-appear-to-be-asynchronous#option-2-fire-after-next-repaint
 				requestAnimationFrame(() => {
-					// Wait for the markup to be inserted and rendered to the DOM. We do this to ensure the Twitter Widget script in the MAIN world won't attempt to load the tweet after the markup is inserted but before it's rendered. Sending a postMessage after inserting markup causes the event to fire before the markup has been rendered, so we wait for the animation frame.
-					window.postMessage({ type: 'load_twitter_widgets', id: link.closest('.message').id });
+					// Fires _before_ next repaint.
+					link.insertAdjacentHTML('afterend', embed.html);
 
-					// The message listener is in contents/twitterEmbed.ts
+					// Wait for the markup to be inserted and rendered to the DOM before loading the wi dget. We do this to ensure the Twitter Widget script in the MAIN world can sometimes fire before the markup is rendered to the screen. Sending a postMessage after inserting markup causes the event to fire in the correct order after insertion.
+					requestAnimationFrame(() => {
+						// Fires _after next repaint.
+						// The message listener is in contents/twitterEmbed.ts
+						window.postMessage({ type: 'load_twitter_widget', id: link.closest('.message').id });
+					});
 				});
 			}
 		});
@@ -45,26 +51,22 @@ export default createFeature(
 		const settings:EmbedTwitterSettings = await storage.get('embedTwitter');
 		theme = settings.theme;
 
-		const twitterWJS = document.createElement('script');
-		twitterWJS.id = 'twitter-wjs';
-		twitterWJS.src = widget;
-		document.head.appendChild(twitterWJS);
+		const id = 'twitter-wjs';
+		if (!document.getElementById(id)) {
+			const twitterWJS = document.createElement('script');
+			twitterWJS.id = id;
+			twitterWJS.src = widget;
+			document.head.appendChild(twitterWJS);
+		}
 
+		const rules = '.twitter-tweet { display: none; }';
+		insertStyles(`${CSS_PREFIX}twitter-embeds`, rules);
 
-		// Hacky way of waiting for oembed markup to be added before firing message to main world to load twitter widget from markup.
-		// Source: https://macarthur.me/posts/when-dom-updates-appear-to-be-asynchronous#option-2-fire-after-next-repaint
-		// Execution of requestAnimationFrame. Occurs before next repaint.  Nesting another requestAnimationFrame will fire it's callback  after next repaint (because it waits for the animation frame after the next one to paint)
-		requestAnimationFrame(() => {
-			const links: NodeListOf<HTMLAnchorElement> = document.querySelectorAll('.message-contents p a[href*="twitter.com"], .message-contents p a[href*="x.com"]');
-			// Nesting requestAnimationFrame call inside insertEmbeds means it fires _after_ the next repaint
-			insertEmbeds(links);
-		});
+		const links: NodeListOf<HTMLAnchorElement> = document.querySelectorAll('.message-contents p a[href*="twitter.com"], .message-contents p a[href*="x.com"]');
+		insertEmbeds(links);
 	},
 	async (addedNode) => {
-		requestAnimationFrame(() => {
-			// Fires _before_ next repaint
-			const links: NodeListOf<HTMLAnchorElement> = addedNode.querySelectorAll('.message-contents p a[href*="twitter.com"], .message-contents p a[href*="x.com"]');
-			insertEmbeds(links);
-		});
+		const links: NodeListOf<HTMLAnchorElement> = addedNode.querySelectorAll('.message-contents p a[href*="twitter.com"], .message-contents p a[href*="x.com"]');
+		insertEmbeds(links);
 	},
 );

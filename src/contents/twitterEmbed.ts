@@ -1,4 +1,4 @@
-import type { PlasmoCSConfig } from "plasmo";
+import type { PlasmoCSConfig } from 'plasmo';
 
 // Content script configuration
 export const config: PlasmoCSConfig = {
@@ -11,11 +11,11 @@ window.addEventListener('message', (event) => {
 		return;
 	}
 
-	if (event.data.type && (event.data.type === 'load_twitter_widgets')) {
+	if (event.data.type && (event.data.type === 'load_twitter_widget')) {
 		const addedNode = document.getElementById(event.data.addedNodeId);
 		if (window.twttr.init) {
 			window.twttr.widgets.load(addedNode);
-		} 
+		}
 		else {
 			window.twttr.ready(twttr => twttr.widgets.load(addedNode));
 		}
