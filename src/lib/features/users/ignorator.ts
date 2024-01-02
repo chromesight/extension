@@ -4,6 +4,7 @@ import { Storage } from '@plasmohq/storage';
 import type { IgnoratorSettings } from '~components/options/users';
 import { CSS_PREFIX } from '~constants';
 import insertStyles, { type styleId } from '~lib/insertStyles';
+import { sendToBackground } from '@plasmohq/messaging';
 
 const storageKey = 'ignorator';
 const stylesId: styleId = `${CSS_PREFIX}ignorator`;
@@ -76,7 +77,8 @@ export default createFeature(
 		const { users }:IgnoratorSettings = await storage.get(storageKey);
 
 		// Create CSS rule to hide all posts, threads, and any notices from ignorated users
-		const selectors = Object.keys(users).map((user) => {
+		const userNames = Object.keys(users);
+		const selectors = userNames.map((user) => {
 			const selector = [];
 
 			if (users[user].hideTopics && (window.location.pathname.includes('/threads/') || window.location.pathname.includes('/'))) {
@@ -94,6 +96,7 @@ export default createFeature(
 			return selector.join(',');
 		}).filter(selector => selector !== '');
 
+		const selectorString = selectors.join(',');
 		const rules = `${selectors.join(',')} { display: none }`;
 		insertStyles(stylesId, rules);
 
@@ -102,6 +105,15 @@ export default createFeature(
 		for (const post of posts) {
 			addIgnoratorLink(post as HTMLElement);
 		}
+
+		// Send number of posts to background to create extension badge
+		const hiddenPosts = document.querySelectorAll(selectorString);
+		sendToBackground({
+			name: 'ignoratorBadge',
+			body: {
+				hiddenPosts: hiddenPosts.length.toString(),
+			},
+		});
 	},
 	async (addedNode) => {
 		addIgnoratorLink(addedNode as HTMLElement);
