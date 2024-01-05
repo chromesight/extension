@@ -58,7 +58,7 @@ function handleNewPost(mutations: MutationRecord[], features: Feature[]) {
 	const className = `${CSS_PREFIX}mutated`;
 	for (const mutation of mutations) {
 		// Target any new posts added
-		if (mutation.addedNodes.length) {
+		if (mutation.addedNodes.length && mutation.removedNodes.length) {
 			for (const addedNode of mutation.addedNodes as NodeListOf<HTMLElement>) {
 				// Check if the added node is a normal HTML tag, otherwise, we can skip it
 				if (!(addedNode as HTMLElement).tagName) continue;
