@@ -116,13 +116,13 @@ export default createFeature(
 		// Count number of ignorated posts and display as badge on extension
 		if (selectors.length) {
 			hiddenPosts = document.querySelectorAll(selectorString).length;
-			sendToBackground({
-				name: 'ignoratorBadge',
-				body: {
-					hiddenPosts: hiddenPosts.toString(),
-				},
-			});
 		}
+		sendToBackground({
+			name: 'ignoratorBadge',
+			body: {
+				hiddenPosts: hiddenPosts.toString(),
+			},
+		});
 
 		// Add a link to ignorate a user to all posts
 		const posts = document.querySelectorAll('.post');
