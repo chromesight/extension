@@ -91,6 +91,7 @@ export default createFeature(
 
 		// Create CSS rule to hide all posts, threads, and any notices from ignorated users
 		ignoratedUsers = Object.keys(users);
+		const ignoratoredPostSelectors: string[] = [];
 		const selectors = ignoratedUsers.map((user) => {
 			const selector = [];
 
@@ -100,6 +101,7 @@ export default createFeature(
 
 			if (users[user].hidePosts && window.location.pathname.includes('/thread/')) {
 				selector.push(`.post[data-user="${user}"], .message-contents blockquote[data-user="${user}"]`);
+				ignoratoredPostSelectors.push(`.post[data-user="${user}"]`);
 			}
 
 			if (window.location.pathname.includes('/notices/')) {
@@ -108,21 +110,19 @@ export default createFeature(
 
 			return selector.join(',');
 		}).filter(selector => selector !== '');
-
-		const selectorString = selectors.join(',');
 		const rules = `${selectors.join(',')} { display: none }`;
 		insertStyles(stylesId, rules);
 
 		// Count number of ignorated posts and display as badge on extension
-		if (selectors.length) {
-			hiddenPosts = document.querySelectorAll(selectorString).length;
-			sendToBackground({
-				name: 'ignoratorBadge',
-				body: {
-					hiddenPosts: hiddenPosts.toString(),
-				},
-			});
+		if (ignoratedUsers.length) {
+			hiddenPosts = document.querySelectorAll(ignoratoredPostSelectors.join(',')).length;
 		}
+		sendToBackground({
+			name: 'ignoratorBadge',
+			body: {
+				hiddenPosts: hiddenPosts.toString(),
+			},
+		});
 
 		// Add a link to ignorate a user to all posts
 		const posts = document.querySelectorAll('.post');
