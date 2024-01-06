@@ -1,7 +1,7 @@
 {
   "name": "chrome-sight",
   "displayName": "ChromeSight",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Quality of life features for the blue websight.",
   "author": "Joshh",
   "scripts": {
