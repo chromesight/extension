@@ -114,7 +114,7 @@ export default createFeature(
 		insertStyles(stylesId, rules);
 
 		// Count number of ignorated posts and display as badge on extension
-		if (ignoratedUsers.length) {
+		if (ignoratoredPostSelectors.length) {
 			const hiddenPostsSelectors = ignoratoredPostSelectors.join(',');
 			hiddenPosts = document.querySelectorAll(hiddenPostsSelectors).length;
 		}
