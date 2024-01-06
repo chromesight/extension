@@ -8,6 +8,7 @@ import { sendToBackground } from '@plasmohq/messaging';
 
 const storageKey = 'ignorator';
 const stylesId: styleId = `${CSS_PREFIX}ignorator`;
+let ignoratorBadge = false;
 let hiddenPosts = 0;
 let ignoratedUsers = [];
 
@@ -53,12 +54,7 @@ async function confirmIgnoratorAddition(e) {
 
 				// Add user's posts to ignorated post count badge
 				hiddenPosts += document.querySelectorAll(selector).length;
-				sendToBackground({
-					name: 'ignoratorBadge',
-					body: {
-						hiddenPosts: hiddenPosts.toString(),
-					},
-				});
+				updateBadge(hiddenPosts);
 			}
 		}
 	}
@@ -81,49 +77,58 @@ function addIgnoratorLink(post: HTMLElement) {
 	header.insertAdjacentElement('beforeend', wrapper);
 }
 
+function updateBadge(count: number) {
+	if (ignoratorBadge) {
+		sendToBackground({
+			name: 'ignoratorBadge',
+			body: {
+				hiddenPosts: count.toString(),
+			},
+		});
+	}
+}
+
 export default createFeature(
 	'ignorator',
 	async () => {
 		logDebugMessage('Feature Enabled: Ignorator');
 
 		const storage = new Storage();
-		const { users }:IgnoratorSettings = await storage.get(storageKey);
+		const { users, badge }:IgnoratorSettings = await storage.get(storageKey);
+
+		ignoratedUsers = Object.keys(users);
+		ignoratorBadge = badge;
 
 		// Create CSS rule to hide all posts, threads, and any notices from ignorated users
-		ignoratedUsers = Object.keys(users);
-		const ignoratoredPostSelectors: string[] = [];
-		const selectors = ignoratedUsers.map((user) => {
-			const selector = [];
+		const badgeSelectors: string[] = [];
+		const ignoreSelectors = ignoratedUsers.map((user) => {
+			const userSelector = [];
 
 			if (users[user].hideTopics && (window.location.pathname.includes('/threads/') || window.location.pathname.includes('/'))) {
-				selector.push(`.grid tr[data-user="${user}"]`);
+				userSelector.push(`.grid tr[data-user="${user}"]`);
+				badgeSelectors.push(`.grid tr[data-user="${user}"]`);
 			}
 
 			if (users[user].hidePosts && window.location.pathname.includes('/thread/')) {
-				selector.push(`.post[data-user="${user}"], .message-contents blockquote[data-user="${user}"]`);
-				ignoratoredPostSelectors.push(`.post[data-user="${user}"]`);
+				userSelector.push(`.post[data-user="${user}"], .message-contents blockquote[data-user="${user}"]`);
+				badgeSelectors.push(`.post[data-user="${user}"]`);
 			}
 
 			if (window.location.pathname.includes('/notices/')) {
-				selector.push(`.grid tr[id*="${user}"]`);
+				userSelector.push(`.grid tr[id*="${user}"]`);
+				badgeSelectors.push(`.grid tr[id*="${user}"]`);
 			}
 
-			return selector.join(',');
+			return userSelector.join(',');
 		}).filter(selector => selector !== '');
-		const rules = `${selectors.join(',')} { display: none }`;
+		const rules = `${ignoreSelectors.join(',')} { display: none }`;
 		insertStyles(stylesId, rules);
 
 		// Count number of ignorated posts and display as badge on extension
-		if (ignoratoredPostSelectors.length) {
-			const hiddenPostsSelectors = ignoratoredPostSelectors.join(',');
-			hiddenPosts = document.querySelectorAll(hiddenPostsSelectors).length;
+		if (badgeSelectors.length) {
+			hiddenPosts = document.querySelectorAll(badgeSelectors.join(',')).length;
 		}
-		sendToBackground({
-			name: 'ignoratorBadge',
-			body: {
-				hiddenPosts: hiddenPosts.toString(),
-			},
-		});
+		updateBadge(hiddenPosts);
 
 		// Add a link to ignorate a user to all posts
 		const allPosts = document.querySelectorAll('.post');
@@ -134,14 +139,9 @@ export default createFeature(
 	async (addedNode) => {
 		addIgnoratorLink(addedNode as HTMLElement);
 
-		// If this post is from an ignorated user, add it to the ignorated post counter badge
+		// If this post is from an ignorated user, add it to the ignorated user post count badge
 		if (ignoratedUsers.includes(addedNode.dataset.user)) {
-			sendToBackground({
-				name: 'ignoratorBadge',
-				body: {
-					hiddenPosts: (++hiddenPosts).toString(),
-				},
-			});
+			updateBadge(++hiddenPosts);
 		}
 	},
 );

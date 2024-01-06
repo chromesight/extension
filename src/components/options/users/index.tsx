@@ -17,6 +17,7 @@ export interface IgnoratedUsers {
 export interface IgnoratorSettings {
 	enabled: boolean,
 	users: IgnoratedUsers,
+	badge: boolean,
 }
 
 export interface HighlightedUser {
@@ -35,17 +36,17 @@ export interface HighlighterSettings {
 
 
 export default function UsersOptions() {
-	const [ignorator, setIgnorator] = useStorage<IgnoratorSettings>('ignorator', v => v === undefined ? { enabled: false, users: {} } : v);
+	const [ignorator, setIgnorator] = useStorage<IgnoratorSettings>('ignorator', v => v === undefined ? { enabled: false, users: {}, badge: false } : v);
 	const [highlighter, setHighlighter] = useStorage<HighlighterSettings>('highlighter', v => v === undefined ? { enabled: false, users: {} } : v);
 
 	const handleIgnoratorUserState = useCallback((userUpdate: IgnoratedUsers) => {
-		const { enabled, users } = ignorator;
-		setIgnorator({ enabled, users: { ...users, ...userUpdate } });
+		const { users } = ignorator;
+		setIgnorator({ ...ignorator, users: { ...users, ...userUpdate } });
 	}, [ignorator, setIgnorator]);
 
 	const handleHighlighterUserState = useCallback((userUpdate: HighlightedUsers) => {
-		const { enabled, users } = highlighter;
-		setHighlighter({ enabled, users: { ...users, ...userUpdate } });
+		const { users } = highlighter;
+		setHighlighter({ ...highlighter, users: { ...users, ...userUpdate } });
 	}, [highlighter, setHighlighter]);
 
 	return (
@@ -60,6 +61,16 @@ export default function UsersOptions() {
 					<Switch
 						onChange={(checked: boolean) => setIgnorator({ ...ignorator, enabled: checked })}
 						checked={ignorator.enabled}
+					/>
+				</fieldset>
+				<fieldset className={style.fieldset}>
+					<div className={`${style.group} ${style.small}`}>
+						<p className={style.label}>Display ignorated posts badge</p>
+						<p className={style.description}>On the current page, show the number of posts from ignorated users as a badge on the ChromeSight extension icon</p>
+					</div>
+					<Switch
+						onChange={(checked: boolean) => setIgnorator({ ...ignorator, badge: checked })}
+						checked={ignorator.badge}
 					/>
 				</fieldset>
 
