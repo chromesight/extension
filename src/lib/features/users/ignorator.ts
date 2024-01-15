@@ -9,8 +9,8 @@ import { sendToBackground } from '@plasmohq/messaging';
 const storageKey = 'ignorator';
 const stylesId: styleId = `${CSS_PREFIX}ignorator`;
 let ignoratorBadge = false;
-let hiddenPosts = [];
-let ignoratedUsers = [];
+const ignoratedUsers = [];
+const hiddenPosts = [];
 
 export async function removeUserFromIgnorator(userId: string) {
 	const storage = new Storage();
@@ -47,17 +47,15 @@ async function confirmIgnoratorAddition(e) {
 			const ignorated = await addUserToIgnorator(userId);
 			if (ignorated) {
 				// We only target posts, since this function is only ever triggered from the message list
-				ignoratedUsers.push(userId);
 				const styles = document.querySelector(`#${stylesId}`);
 				const selector = `.post[data-user="${userId}"]`;
 				styles.innerHTML = `${styles.innerHTML}\n${selector} { display: none; }`;
 
 				// Add user's posts to ignorated post count badge
-				// hiddenPosts += document.querySelectorAll(selector).length;
-				const newHiddenPostIDs = extractPostIds(document.querySelectorAll(selector));
-				console.log(newHiddenPostIDs);
-				hiddenPosts.push(...newHiddenPostIDs);
+				const postIds = extractPostIds(document.querySelectorAll(selector));
+				hiddenPosts.push(...postIds);
 				updateBadge(hiddenPosts.length);
+				ignoratedUsers.push(userId);
 			}
 		}
 	}
@@ -103,7 +101,7 @@ export default createFeature(
 		const storage = new Storage();
 		const { users, badge }:IgnoratorSettings = await storage.get(storageKey);
 
-		ignoratedUsers = Object.keys(users);
+		ignoratedUsers.push(...Object.keys(users));
 		ignoratorBadge = badge;
 
 		// Create CSS rule to hide all posts, threads, and any notices from ignorated users
