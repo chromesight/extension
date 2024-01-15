@@ -9,7 +9,7 @@ import { sendToBackground } from '@plasmohq/messaging';
 const storageKey = 'ignorator';
 const stylesId: styleId = `${CSS_PREFIX}ignorator`;
 let ignoratorBadge = false;
-let hiddenPosts = 0;
+let hiddenPosts = [];
 let ignoratedUsers = [];
 
 export async function removeUserFromIgnorator(userId: string) {
@@ -53,8 +53,11 @@ async function confirmIgnoratorAddition(e) {
 				styles.innerHTML = `${styles.innerHTML}\n${selector} { display: none; }`;
 
 				// Add user's posts to ignorated post count badge
-				hiddenPosts += document.querySelectorAll(selector).length;
-				updateBadge(hiddenPosts);
+				// hiddenPosts += document.querySelectorAll(selector).length;
+				const newHiddenPostIDs = extractPostIds(document.querySelectorAll(selector));
+				console.log(newHiddenPostIDs);
+				hiddenPosts.push(...newHiddenPostIDs);
+				updateBadge(hiddenPosts.length);
 			}
 		}
 	}
@@ -75,6 +78,10 @@ function addIgnoratorLink(post: HTMLElement) {
 	wrapper.insertAdjacentText('beforeend', ' | ');
 	wrapper.insertAdjacentElement('beforeend', link);
 	header.insertAdjacentElement('beforeend', wrapper);
+}
+
+function extractPostIds(nodes: NodeList) {
+	return [...nodes].map((element: HTMLElement) => element.dataset.post);
 }
 
 function updateBadge(count: number) {
@@ -126,9 +133,11 @@ export default createFeature(
 
 		// Count number of ignorated posts and display as badge on extension
 		if (badgeSelectors.length) {
-			hiddenPosts = document.querySelectorAll(badgeSelectors.join(',')).length;
+			const posts = document.querySelectorAll(badgeSelectors.join(','));
+			const postIds = extractPostIds(posts);
+			hiddenPosts.push(...postIds);
 		}
-		updateBadge(hiddenPosts);
+		updateBadge(hiddenPosts.length);
 
 		// Add a link to ignorate a user to all posts
 		const allPosts = document.querySelectorAll('.post');
@@ -140,8 +149,10 @@ export default createFeature(
 		addIgnoratorLink(addedNode as HTMLElement);
 
 		// If this post is from an ignorated user, add it to the ignorated user post count badge
-		if (ignoratedUsers.includes(addedNode.dataset.user)) {
-			updateBadge(++hiddenPosts);
+		const postId = addedNode.dataset.post;
+		if (ignoratedUsers.includes(addedNode.dataset.user) && !hiddenPosts.includes(postId)) {
+			hiddenPosts.push(postId);
+			updateBadge(hiddenPosts.length);
 		}
 	},
 );
