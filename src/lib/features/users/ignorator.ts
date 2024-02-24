@@ -43,7 +43,8 @@ async function confirmIgnoratorAddition(e) {
 	const userId = post.dataset.user;
 
 	if (post.dataset.user !== 'tiko') {
-		if (confirm('Are you sure you want to ignorate this user?')) {
+		const confirmed = confirm('Are you sure you want to ignorate this user?');
+		if (confirmed) {
 			const ignorated = await addUserToIgnorator(userId);
 			if (ignorated) {
 				// We only target posts, since this function is only ever triggered from the message list

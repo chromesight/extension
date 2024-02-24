@@ -4,7 +4,7 @@ import features from '~lib/features/topicList';
 
 // Content script configuration
 export const config: PlasmoCSConfig = {
-	matches: ['*://*.websight.blue/', '*://*.websight.blue/threads/*', '*://*.websight.blue/search/*'],
+	matches: ['*://websight.blue/world/', '*://*.websight.blue/', '*://*.websight.blue/threads/*', '*://*.websight.blue/search/*'],
 };
 
 injectFeatures(features);

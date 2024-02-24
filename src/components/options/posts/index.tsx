@@ -133,7 +133,7 @@ export default function PostsOptions() {
 
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Embed Twitter links</p>
+					<p className={style.label}>Embed X/Twitter links</p>
 				</div>
 				<Switch
 					onChange={(checked: boolean) => setEmbedTwitter({ ...embedTwitter, enabled: checked })}

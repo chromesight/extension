@@ -1,7 +1,7 @@
 {
   "name": "chrome-sight",
   "displayName": "ChromeSight",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "Quality of life features for the blue websight.",
   "author": "Joshh",
   "scripts": {
@@ -37,6 +37,7 @@
   },
   "manifest": {
     "host_permissions": [
+      "https://websight.blue/*",
       "https://*.websight.blue/*",
       "https://publish.twitter.com/*"
     ]
