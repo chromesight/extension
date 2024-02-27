@@ -2,7 +2,7 @@ import pageStyles from '../../style.module.css';
 import styles from './style.module.css';
 import Button from '~components/ui/Button';
 import type { TopicNotes, UserNotes } from '..';
-import { useState, type FormEvent } from 'react';
+import { useState, type FormEvent, type ChangeEvent, useEffect, type ChangeEventHandler } from 'react';
 
 type Notes = {
 	type?: 'user' | 'topic';
@@ -18,6 +18,21 @@ const formatNoteKey = (id: string, type: string) => {
 		return id.toLowerCase().trim().replaceAll(/\s/g, '+');
 	}
 };
+
+function Textarea({ note, onChange }: { note: string; onChange: ChangeEventHandler<HTMLTextAreaElement>; }) {
+	const [value, setValue] = useState(note);
+
+	useEffect(() => setValue(note), [note]);
+
+	return <textarea
+		value={value}
+		placeholder='ID'
+		onChange={event => {
+			setValue(event.target.value);
+			onChange(event);
+		}}
+	/>;
+}
 
 export default function Notes({ type = 'user', notes, onChange: handleChange }: Notes) {
 	const [topicIdGuess, setTopicIdGuess] = useState(false);
@@ -76,9 +91,8 @@ export default function Notes({ type = 'user', notes, onChange: handleChange }: 
 								<tr key={id}>
 									<td>{id.replaceAll('+', ' ')}</td>
 									<td>
-										<textarea
-											value={notes[id]}
-											placeholder='ID'
+										<Textarea
+											note={notes[id]}
 											onChange={event => handleUpdateNote(id, event.target.value)}
 										/>
 									</td>

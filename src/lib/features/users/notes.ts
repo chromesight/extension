@@ -11,7 +11,6 @@ async function removeUserNote(userId: string) {
 	const settings:NoteSettings = await storage.get(key);
 	delete settings.users[userId];
 	await storage.set(key, settings);
-	console.log(settings);
 }
 
 async function addUserNote(userId: string, note: string) {
