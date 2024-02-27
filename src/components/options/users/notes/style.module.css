@@ -6,8 +6,8 @@
 .add-note-form {
     margin-top: 12px;
     display: flex;
+    align-items: center;
     gap: 8px;
-    align-items: flex-start;
 }
 
 .add-note-form textarea {
@@ -16,4 +16,17 @@
 
 .table textarea {
     width: 100%;
+}
+
+.danger {
+    color: #c90c0c;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .01px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .danger {
+        color: #ff4d4d;
+    }
 }

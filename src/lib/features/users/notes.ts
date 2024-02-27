@@ -1,41 +1,56 @@
 import logDebugMessage from '~lib/logs/debug';
 import createFeature from '../feature';
 import { Storage } from '@plasmohq/storage';
+import type { NoteSettings } from '~components/options/users';
+import { CSS_PREFIX } from '~constants';
 
-const key = 'userNotes';
+const key = 'notes';
 
-function removeUserNote(userId: string) {
-	// const storage = new Storage();
-	// const ignoratorSettings:IgnoratorSettings = await storage.get(key);
-	// delete ignoratorSettings.users[userId];
-	// await storage.set(key, ignoratorSettings);
+async function removeUserNote(userId: string) {
+	const storage = new Storage();
+	const settings:NoteSettings = await storage.get(key);
+	delete settings.users[userId];
+	await storage.set(key, settings);
+	console.log(settings);
 }
 
-function addUserNote(userId: string) {
-	// if (userId !== 'tiko') {
-	// 	const storage = new Storage();
-	// 	const ignoratorSettings:IgnoratorSettings = await storage.get(key);
-	// 	ignoratorSettings.users[userId] = {
-	// 		hideTopics: true,
-	// 		hidePosts: true,
-	// 	};
-	// 	await storage.set(key, ignoratorSettings);
-	// 	return true;
-	// }
-	// else {
-	// 	alert('You can\'t ignorate Tiko.');
-	// 	return false;
-	// }
+async function addUserNote(userId: string, note: string) {
+	const storage = new Storage();
+	const settings: NoteSettings = await storage.get(key);
+	settings.users[userId] = note;
+	await storage.set(key, settings);
 }
 
 function handleUserNoteDisplay(event: MouseEvent) {
 	event.preventDefault();
-	const post: HTMLElement = (event.target as HTMLElement).closest('.post');
-	const userId = post.dataset.user;
+	const post = (event.target as HTMLLinkElement).closest('.post');
+	const textarea: HTMLElement = post.querySelector(`.${CSS_PREFIX}user-note-textarea`);
+	const display = textarea.style.display;
+	textarea.style.display = display === 'none' ? 'block' : 'none';
 }
 
-function addNoteLink(post: HTMLElement) {
+function createNoteToggle(post: HTMLElement, note?: string) {
 	const header = post.querySelector('.message-top');
+
+	const textarea = document.createElement('textarea');
+	textarea.classList.add(`${CSS_PREFIX}user-note-textarea`);
+	textarea.id = `${CSS_PREFIX}user-note-textarea-${post.dataset.post}`;
+	textarea.value = note ?? '';
+	textarea.style.display = 'none';
+	textarea.addEventListener('change', event => {
+		const value = (event.target as HTMLTextAreaElement).value;
+		const user = post.dataset.user;
+		if (value) {
+			addUserNote(user, value);
+		}
+		else {
+			removeUserNote(user);
+		}
+
+		// Update other user note textareas for this user on the page
+		const elements = document.querySelectorAll(`.post[data-user="${post.dataset.user}"] .${CSS_PREFIX}user-note-textarea`);
+		elements.forEach((element: HTMLTextAreaElement) => element.value = value);
+	});
 
 	const link = document.createElement('a');
 	link.href = '#';
@@ -46,6 +61,7 @@ function addNoteLink(post: HTMLElement) {
 	wrapper.insertAdjacentText('beforeend', ' | ');
 	wrapper.insertAdjacentElement('beforeend', link);
 	header.insertAdjacentElement('beforeend', wrapper);
+	header.insertAdjacentElement('afterend', textarea);
 }
 
 export default createFeature(
@@ -53,17 +69,18 @@ export default createFeature(
 	async () => {
 		logDebugMessage('Feature Enabled: User Notes');
 
-		const storage = new Storage({ area: 'local' });
-		// const { users, badge }:IgnoratorSettings = await storage.get(key);
+		const storage = new Storage();
+		const { users, topics }:NoteSettings = await storage.get(key);
+		//  TODO: display topic notes in lib/features/postList/notes.ts
 		//  TODO: display user notes toggle button and textarea
 
-		// Add a link to add a user note to all posts
+		// Add a link to user notes on all posts
 		const allPosts = document.querySelectorAll('.post');
 		for (const post of allPosts) {
-			addNoteLink(post as HTMLElement);
+			createNoteToggle(post as HTMLElement, users[(post as HTMLElement).dataset.user]);
 		}
 	},
 	async (addedNode) => {
-		addNoteLink(addedNode as HTMLElement);
+		createNoteToggle(addedNode as HTMLElement);
 	},
 );

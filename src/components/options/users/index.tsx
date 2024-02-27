@@ -19,6 +19,7 @@ export interface NoteSettings {
 	users: UserNotes,
 	topics: TopicNotes
 }
+
 export interface IgnoratedUser {
 	hideTopics: true,
 	hidePosts: true,
@@ -123,7 +124,7 @@ export default function UsersOptions() {
 				<fieldset className={style.fieldset}>
 					<div className={`${style.group} ${style.small}`}>
 						<p className={style.label}>User & topic notes</p>
-						<p className={style.description}>Read & write private notes about users & topics. Notes are only visible to you.</p>
+						<p className={style.description}>Write private notes about users & topics. Notes are only visible to you.</p>
 					</div>
 					<Switch
 						onChange={(checked: boolean) => setNotes({ ...notes, enabled: checked })}

@@ -1,6 +1,7 @@
 import type { Feature } from '../feature';
 import highlighter from '../users/highlighter';
 import ignorator from '../users/ignorator';
+import notes from '../users/notes';
 import autoRedirect from './autoRedirect';
 import autoScroll from './autoScroll';
 import embedTwitter from './embedTwitter';
@@ -16,6 +17,7 @@ const features: Feature[] = [
 	nwsTopicImages,
 	ignorator,
 	highlighter,
+	notes,
 	markTopicCreator,
 	postNumbers,
 	autoScroll,
