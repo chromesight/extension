@@ -2,7 +2,7 @@ import pageStyles from '../../style.module.css';
 import styles from './style.module.css';
 import Button from '~components/ui/Button';
 import type { TopicNotes, UserNotes } from '..';
-import { useState, type FormEvent, type ChangeEvent, useEffect, type ChangeEventHandler } from 'react';
+import { useState, useEffect, type FormEvent, type ChangeEventHandler } from 'react';
 
 type Notes = {
 	type?: 'user' | 'topic';
@@ -42,7 +42,7 @@ export default function Notes({ type = 'user', notes, onChange: handleChange }: 
 	const handleAddNote = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		const target = event.target;
+		const target = event.target as HTMLFormElement;
 		const id = target['note-id'].value;
 		const value = target['note-value'].value;
 

@@ -20,7 +20,24 @@ async function addUserNote(userId: string, note: string) {
 	await storage.set(key, settings);
 }
 
-function handleUserNoteDisplay(event: MouseEvent) {
+async function updateUserNote(event: Event) {
+	const target = event.target as HTMLTextAreaElement;
+	const post = target.closest('.post') as HTMLElement;
+	const value = target.value;
+	const user = post.dataset.user;
+	if (value) {
+		await addUserNote(user, value);
+	}
+	else {
+		await removeUserNote(user);
+	}
+
+	// Update other user note textareas for this user on the page
+	const elements = document.querySelectorAll(`.post[data-user="${post.dataset.user}"] .${CSS_PREFIX}user-note-textarea`);
+	elements.forEach((element: HTMLTextAreaElement) => element.value = value);
+}
+
+function toggleUserNoteDisplay(event: MouseEvent) {
 	event.preventDefault();
 	const post = (event.target as HTMLLinkElement).closest('.post');
 	const textarea: HTMLElement = post.querySelector(`.${CSS_PREFIX}user-note-textarea`);
@@ -36,25 +53,12 @@ function createNoteToggle(post: HTMLElement, note?: string) {
 	textarea.id = `${CSS_PREFIX}user-note-textarea-${post.dataset.post}`;
 	textarea.value = note ?? '';
 	textarea.style.display = 'none';
-	textarea.addEventListener('change', event => {
-		const value = (event.target as HTMLTextAreaElement).value;
-		const user = post.dataset.user;
-		if (value) {
-			addUserNote(user, value);
-		}
-		else {
-			removeUserNote(user);
-		}
-
-		// Update other user note textareas for this user on the page
-		const elements = document.querySelectorAll(`.post[data-user="${post.dataset.user}"] .${CSS_PREFIX}user-note-textarea`);
-		elements.forEach((element: HTMLTextAreaElement) => element.value = value);
-	});
+	textarea.addEventListener('change', updateUserNote);
 
 	const link = document.createElement('a');
 	link.href = '#';
 	link.innerText = 'User Note';
-	link.addEventListener('click', handleUserNoteDisplay);
+	link.addEventListener('click', toggleUserNoteDisplay);
 
 	const wrapper = document.createElement('span');
 	wrapper.insertAdjacentText('beforeend', ' | ');
@@ -69,14 +73,13 @@ export default createFeature(
 		logDebugMessage('Feature Enabled: User Notes');
 
 		const storage = new Storage();
-		const { users, topics }:NoteSettings = await storage.get(key);
+		const { users }:NoteSettings = await storage.get(key);
 		//  TODO: display topic notes in lib/features/postList/notes.ts
-		//  TODO: display user notes toggle button and textarea
 
-		// Add a link to user notes on all posts
-		const allPosts = document.querySelectorAll('.post');
-		for (const post of allPosts) {
-			createNoteToggle(post as HTMLElement, users[(post as HTMLElement).dataset.user]);
+		const posts = document.querySelectorAll('.post');
+		for (const post of posts) {
+			const p = post as HTMLElement;
+			createNoteToggle(p, users[p.dataset.user]);
 		}
 	},
 	async (addedNode) => {
