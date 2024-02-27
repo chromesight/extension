@@ -4,7 +4,7 @@ import { addUserToHighlighter, removeUserFromHighlighter } from '~lib/features/u
 import pageStyles from '../../style.module.css';
 import styles from './style.module.css';
 
-function HighlightedUsers({ users, handleUserState }) {
+function HighlightedUsers({ users, onChange }) {
 	const userIds = Object.keys(users);
 	if (userIds.length) {
 		const rows = userIds.map(key => {
@@ -17,7 +17,7 @@ function HighlightedUsers({ users, handleUserState }) {
 							handleColorChange={color => {
 								const newValue = {};
 								newValue[key] = { ...users[key], backgroundColor: color.hex };
-								handleUserState(newValue);
+								onChange(newValue);
 							}}
 						/>
 					</td>
@@ -27,7 +27,7 @@ function HighlightedUsers({ users, handleUserState }) {
 							handleColorChange={color => {
 								const newValue = {};
 								newValue[key] = { ...users[key], textColor: color.hex };
-								handleUserState(newValue);
+								onChange(newValue);
 							}}
 						/>
 					</td>
@@ -52,7 +52,7 @@ function HighlightedUsers({ users, handleUserState }) {
 	}
 }
 
-export default function Highlighter({ settings, handleUserState }) {
+export default function Highlighter({ settings, onChange }) {
 	return (
 		<>
 			<table className={styles.table}>
@@ -65,7 +65,7 @@ export default function Highlighter({ settings, handleUserState }) {
 					</tr>
 				</thead>
 				<tbody>
-					<HighlightedUsers users={settings.users} handleUserState={handleUserState} />
+					<HighlightedUsers users={settings.users} onChange={onChange} />
 				</tbody>
 			</table>
 			<form
