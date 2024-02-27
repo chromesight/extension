@@ -3,12 +3,17 @@
     text-align: center;
 }
 
-.add-user-form {
+.add-note-form {
     margin-top: 12px;
     display: flex;
     gap: 8px;
+    align-items: flex-start;
 }
 
-.add-user-form input[type=text] {
+.add-note-form textarea {
     flex-grow: 1;
+}
+
+.table textarea {
+    width: 100%;
 }

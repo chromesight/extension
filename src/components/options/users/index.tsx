@@ -122,8 +122,8 @@ export default function UsersOptions() {
 				<h3 className={style.heading}>Notes</h3>
 				<fieldset className={style.fieldset}>
 					<div className={`${style.group} ${style.small}`}>
-						<p className={style.label}>User notes</p>
-						<p className={style.description}>Read & write private notes about a user. Notes are only visible to you.</p>
+						<p className={style.label}>User & topic notes</p>
+						<p className={style.description}>Read & write private notes about users & topics. Notes are only visible to you.</p>
 					</div>
 					<Switch
 						onChange={(checked: boolean) => setNotes({ ...notes, enabled: checked })}
@@ -131,7 +131,11 @@ export default function UsersOptions() {
 					/>
 				</fieldset>
 
+				<h3 className={style.heading}><small>User Notes</small></h3>
 				<Notes type="user" notes={notes.users} onChange={handleUserNotesChange} />
+
+				<h3 className={style.heading}><small>Topic Notes</small></h3>
+				<Notes type="topic" notes={notes.topics} onChange={handleTopicNotesChange} />
 			</div>
 		</>
 	);

@@ -55,6 +55,7 @@ export default createFeature(
 
 		const storage = new Storage({ area: 'local' });
 		// const { users, badge }:IgnoratorSettings = await storage.get(key);
+		//  TODO: display user notes toggle button and textarea
 
 		// Add a link to add a user note to all posts
 		const allPosts = document.querySelectorAll('.post');

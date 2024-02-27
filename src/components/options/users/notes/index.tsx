@@ -4,7 +4,22 @@ import Button from '~components/ui/Button';
 import type { TopicNotes, UserNotes } from '..';
 import type { FormEvent } from 'react';
 
-export default function Notes({ type = 'user', notes, onChange: handleChange }: { type?: 'user' | 'topic'; notes: UserNotes | TopicNotes; onChange: (change: { [id: string]: string; }) => void; }) {
+type Notes = {
+	type?: 'user' | 'topic';
+	notes: UserNotes | TopicNotes;
+	onChange: (change: { [id: string]: string; }) => void;
+}
+
+const formatNoteKey = (id: string, type: string) => {
+	if (type === 'topic') {
+		return id;
+	}
+	else {
+		return id.toLowerCase().trim().replaceAll(/\s/g, '+');
+	}
+};
+
+export default function Notes({ type = 'user', notes, onChange: handleChange }: Notes) {
 	const titleCase = type === 'user' ? 'User' : 'Topic';
 	const ids = Object.keys(notes);
 
@@ -24,7 +39,7 @@ export default function Notes({ type = 'user', notes, onChange: handleChange }: 
 			return false;
 		}
 
-		const key = type === 'topic' ? id : id.toLowerCase().trim().replaceAll(/\s/g, '+');
+		const key = formatNoteKey(id, type);
 		handleChange({
 			[key]: value,
 		});
@@ -37,11 +52,7 @@ export default function Notes({ type = 'user', notes, onChange: handleChange }: 
 		handleChange(updatedNotes);
 	};
 
-	const handleNoteChange = (id: string, value: string) => {
-		handleChange({
-			[id]: value,
-		});
-	};
+	const handleNoteChange = (id: string, value: string) => handleChange({ [id]: value });
 
 	return (
 		<>
@@ -101,6 +112,7 @@ export default function Notes({ type = 'user', notes, onChange: handleChange }: 
 						name="note-value"
 						placeholder={`${titleCase} Note`}
 						required
+						rows={1}
 					/>
 					<Button>Add Note</Button>
 				</div>
