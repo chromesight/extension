@@ -3,6 +3,7 @@ import createFeature from '../feature';
 import { Storage } from '@plasmohq/storage';
 import type { NoteSettings } from '~components/options/users';
 import { CSS_PREFIX } from '~constants';
+import insertStyles from '~lib/insertStyles';
 
 const key = 'notes';
 
@@ -75,6 +76,9 @@ export default createFeature(
 		const storage = new Storage();
 		const { users }:NoteSettings = await storage.get(key);
 		//  TODO: display topic notes in lib/features/postList/notes.ts
+
+		const rules = `.${CSS_PREFIX}user-note-textarea { width: 100%; height: 10ch; }`;
+		insertStyles(`${CSS_PREFIX}user-notes`, rules);
 
 		const posts = document.querySelectorAll('.post');
 		for (const post of posts) {

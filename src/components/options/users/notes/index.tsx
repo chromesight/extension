@@ -103,15 +103,15 @@ export default function Notes({ type = 'user', notes, onChange: handleChange }: 
 									</td>
 								</tr>
 							))
-							: <tr><td colSpan={4}><p className={`${pageStyles.description} ${styles['empty-row']}`}>No {type} notes ✍️</p></td></tr>
+							: <tr><td colSpan={4}><p className={`${pageStyles.description} ${styles['empty-row']}`}>No {type} notes {type === 'user' ? '🧑‍💻' : '📃'}✍️</p></td></tr>
 					}
 				</tbody>
 			</table>
 
 			<form onSubmit={handleAddNote}>
 				<div className={`${pageStyles.group} ${pageStyles.small}`}>
-					<label htmlFor="note-id" className={pageStyles.label}>Add {type} note</label>
-					<label htmlFor="ignorate-user" className={pageStyles.description}>
+					<label htmlFor={`note-id-${type}`} className={pageStyles.label}>Add {type} note</label>
+					<label htmlFor={`note-id-${type}`} className={pageStyles.description}>
 						{
 							type === 'user' ?
 								<>Enter a user ID, not a display name. Find a user's ID on their profile.</>
@@ -122,7 +122,7 @@ export default function Notes({ type = 'user', notes, onChange: handleChange }: 
 				<div className={styles['add-note-form']}>
 					<input
 						required
-						id="note-id"
+						id={`note-id-${type}`}
 						name="note-id"
 						type="text"
 						placeholder={`${titleCase} ID`}
@@ -140,7 +140,7 @@ export default function Notes({ type = 'user', notes, onChange: handleChange }: 
 					/>
 					<textarea
 						required
-						id="note-value"
+						id={`note-value-${type}`}
 						name="note-value"
 						placeholder={`${titleCase} Note`}
 						rows={1}

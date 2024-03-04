@@ -31,6 +31,9 @@ function IndexOptions() {
 								<a href="#highlighter">Highlighter</a>
 							</li>
 							<li>
+								<a href="#notes">Notes</a>
+							</li>
+							<li>
 								<hr/>
 								<a href="#about">About</a>
 							</li>
