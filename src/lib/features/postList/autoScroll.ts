@@ -9,7 +9,7 @@ export default createFeature(
 	async (addedNode) => {
 		const element = addedNode as HTMLElement;
 		if (element.classList.contains('post')) {
-			if (document.body.scrollTop >= document.body.scrollHeight - window.innerHeight * 2) {
+			if (window.scrollY >= document.body.scrollHeight - window.innerHeight * 2) {
 				element.scrollIntoView({ behavior: 'smooth' });
 			}
 		}
