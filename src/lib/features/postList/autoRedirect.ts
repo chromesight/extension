@@ -10,8 +10,10 @@ export default createFeature(
 			for (const mutation of mutationList) {
 				if (mutation.type === 'attributes') {
 					const element = mutation.target as HTMLElement;
-					const nearBottomOfPage = document.body.scrollTop >= document.body.scrollHeight - window.innerHeight * 2;
+					const nearBottomOfPage = window.scrollY >= document.body.scrollHeight - window.innerHeight * 2;
+					console.log(nearBottomOfPage);
 					if (nearBottomOfPage && element.style.display === 'block') {
+						console.log(true);
 						setTimeout(() => element.click(), 2000);
 					}
 				}
