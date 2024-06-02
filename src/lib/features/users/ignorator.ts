@@ -26,6 +26,7 @@ export async function addUserToIgnorator(userId: string) {
 		ignoratorSettings.users[userId] = {
 			hideTopics: true,
 			hidePosts: true,
+			hideAvatar: true,
 		};
 		await storage.set(storageKey, ignoratorSettings);
 		return true;
@@ -120,6 +121,14 @@ export default createFeature(
 				badgeSelectors.push(`.post[data-user="${user}"]`);
 			}
 
+			if (!users[user].hidePosts && users[user].hideAvatar && window.location.pathname.includes('/thread/')) {
+				userSelector.push(`.post[data-user="${user}"] .userpic img`);
+			}
+
+			if (users[user].hideAvatar && window.location.pathname.includes(`/profile/${user}`)) {
+				userSelector.push('.grid td > img');
+			}
+
 			if (window.location.pathname.includes('/notices/')) {
 				userSelector.push(`.grid tr[id*="${user}"]`);
 				badgeSelectors.push(`.grid tr[id*="${user}"]`);
@@ -127,8 +136,10 @@ export default createFeature(
 
 			return userSelector.join(',');
 		}).filter(selector => selector !== '');
-		const rules = `${ignoreSelectors.join(',')} { display: none }`;
-		insertStyles(stylesId, rules);
+		if (ignoreSelectors.length) {
+			const rules = `${ignoreSelectors.join(',')} { display: none }`;
+			insertStyles(stylesId, rules);
+		}
 
 		// Count number of ignorated posts and display as badge on extension
 		if (badgeSelectors.length) {

@@ -32,6 +32,17 @@ function IgnoratedUsers({ users, onChange }) {
 						/>
 					</td>
 					<td>
+						<Switch
+							onChange={(checked: boolean) => {
+								const newValue = {};
+								newValue[key] = { ...users[key], hideAvatar: checked };
+								onChange(newValue);
+							}}
+							checked={users[key].hideAvatar || users[key].hidePosts}
+							disabled={users[key].hidePosts}
+						/>
+					</td>
+					<td>
 						<Button
 							onClick={() => {
 								removeUserFromIgnorator(key);
@@ -47,7 +58,7 @@ function IgnoratedUsers({ users, onChange }) {
 	}
 	else {
 		return (<tr>
-			<td colSpan={4}><p className={`${pageStyles.description} ${styles['empty-row']}`}>No users currently ignorated ✨</p></td>
+			<td colSpan={5}><p className={`${pageStyles.description} ${styles['empty-row']}`}>No users currently ignorated ✨</p></td>
 		</tr>);
 	}
 }
@@ -61,6 +72,7 @@ export default function Ignorator({ settings, onChange }) {
 						<th>User ID</th>
 						<th>Hide Topics</th>
 						<th>Hide Posts</th>
+						<th>Hide Avatar</th>
 						<th>Unignorate</th>
 					</tr>
 				</thead>

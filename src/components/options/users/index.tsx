@@ -21,8 +21,9 @@ export interface NoteSettings {
 }
 
 export interface IgnoratedUser {
-	hideTopics: true,
-	hidePosts: true,
+	hideTopics: boolean,
+	hidePosts: boolean,
+	hideAvatar: boolean,
 }
 
 export interface IgnoratedUsers {
