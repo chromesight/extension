@@ -3,7 +3,7 @@ import createFeature from '../feature';
 import { Storage } from '@plasmohq/storage';
 import { sendToBackground } from '@plasmohq/messaging';
 import type { EmbedTwitterSettings } from '~components/options/posts';
-import widget from 'url:~assets/twitter/widgets.js';
+import widget from 'url:@Assets/twitter/widgets.js';
 import insertStyles from '~lib/insertStyles';
 import { CSS_PREFIX } from '~constants';
 
