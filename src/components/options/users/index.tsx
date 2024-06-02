@@ -83,7 +83,7 @@ export default function UsersOptions() {
 				<fieldset className={style.fieldset}>
 					<div className={`${style.group} ${style.small}`}>
 						<p className={style.label}>Ignorated users</p>
-						<p className={style.description}>Hide topics and posts from users listed below</p>
+						<p className={style.description}>Hide topics, posts, and/or avatar from users listed below</p>
 					</div>
 					<Switch
 						onChange={(checked: boolean) => setIgnorator({ ...ignorator, enabled: checked })}
@@ -93,7 +93,7 @@ export default function UsersOptions() {
 				<fieldset className={style.fieldset}>
 					<div className={`${style.group} ${style.small}`}>
 						<p className={style.label}>Display ignorated posts badge</p>
-						<p className={style.description}>On the current page, show the number of posts from ignorated users as a badge on the ChromeSight extension icon</p>
+						<p className={style.description}>Show the number of currently hidden topics or posts from ignorated users on the ChromeSight pinned icon</p>
 					</div>
 					<Switch
 						onChange={(checked: boolean) => setIgnorator({ ...ignorator, badge: checked })}
