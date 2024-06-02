@@ -111,7 +111,7 @@ export default createFeature(
 		const ignoreSelectors = ignoratedUsers.map((user) => {
 			const userSelector = [];
 
-			if (users[user].hideTopics && (window.location.pathname.includes('/threads/') || window.location.pathname.includes('/'))) {
+			if (users[user].hideTopics && (window.location.pathname.includes('/threads/') || window.location.pathname === '/')) {
 				userSelector.push(`.grid tr[data-user="${user}"]`);
 				badgeSelectors.push(`.grid tr[data-user="${user}"]`);
 			}
