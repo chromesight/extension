@@ -26,7 +26,7 @@ export async function addUserToIgnorator(userId: string) {
 		ignoratorSettings.users[userId] = {
 			hideTopics: true,
 			hidePosts: true,
-			hideAvatar: true,
+			hideAvatar: false,
 		};
 		await storage.set(storageKey, ignoratorSettings);
 		return true;
@@ -49,9 +49,14 @@ async function confirmIgnoratorAddition(e) {
 			const ignorated = await addUserToIgnorator(userId);
 			if (ignorated) {
 				// We only target posts, since this function is only ever triggered from the message list
+				const selector = `.post[data-user="${userId}"], .message-contents blockquote[data-user="${userId}"]`;
 				const styles = document.querySelector(`#${stylesId}`);
-				const selector = `.post[data-user="${userId}"]`;
-				styles.innerHTML = `${styles.innerHTML}\n${selector} { display: none; }`;
+				const element = styles ?? document.createElement('style');
+				element.innerHTML = `${element.innerHTML}\n${selector} { display: none; }`;
+				if (!styles) {
+					element.id = `#${stylesId}`;
+					document.head.appendChild(element);
+				}
 
 				// Add user's posts to ignorated post count badge
 				const postIds = extractPostIds(document.querySelectorAll(selector));
