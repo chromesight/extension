@@ -62,7 +62,7 @@ function createToolbar(target): HTMLElement {
 	const link: HTMLElement = createButton('Link', () => insertText(target, '[Link text](https://example.com) '));
 	const image: HTMLElement = createButton('Image', () => insertText(target, '![Alt text](https://example.com/image.png) '));
 	const spoiler: HTMLElement = createButton('Spoiler', () => {
-		const start = '<spoiler>\n';
+		const start = '<spoiler caption="spoiler">\n';
 		const end = '\n</spoiler>';
 		const defaultText = `${start}${end}`;
 		handleBlockFormatting(target, defaultText, start, end);
