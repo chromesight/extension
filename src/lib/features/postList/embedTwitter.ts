@@ -55,7 +55,7 @@ export default createFeature(
 			document.head.appendChild(twitterWJS);
 		}
 
-		const rules = '.twitter-tweet { display: none; }';
+		const rules = '.twitter-tweet { display: none; overflow: hidden; border-radius: 15px; }';
 		insertStyles(`${CSS_PREFIX}twitter-embeds`, rules);
 
 		const storage = new Storage();
