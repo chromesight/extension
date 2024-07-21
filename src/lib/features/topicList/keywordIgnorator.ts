@@ -35,14 +35,16 @@ export default createFeature(
 		kwIgnoratorBadge = badge;
 		const keys = Object.keys(keywords);
 		const topicKeywords = keys.filter(keyword => keywords[keyword].hideTopics);
-		const tagKeywords = keys.filter(keyword => keywords[keyword].hideTags);
 		const topicPattern = new RegExp(topicKeywords.join('|'));
-		const tagPattern = new RegExp(tagKeywords.join('|'));
 		const elements = document.querySelectorAll('.grid tr');
 		const selectors = [];
 
 		// Topic list page
 		if (window.location.pathname.includes('/threads/') || window.location.pathname === '/') {
+			const tagKeywords = keys.filter(keyword => keywords[keyword].hideTags);
+			const tagPattern = new RegExp(tagKeywords.join('|'));
+
+			// Filter for matches
 			elements.forEach((element: HTMLTableRowElement) => {
 				const title: HTMLDivElement = element.querySelector('.fl');
 				const tags: HTMLDivElement = element.querySelector('.fr');
@@ -64,8 +66,11 @@ export default createFeature(
 
 		// Notices page
 		if (window.location.pathname.includes('/notices/')) {
+			// Filter for matches
 			elements.forEach((element: HTMLTableRowElement) => {
 				const title: HTMLDivElement = element.querySelector('td:nth-of-type(2) a:last-of-type');
+
+				// Check topic title
 				if (topicKeywords.length && topicPattern.test(title?.textContent.toLowerCase())) {
 					element.style.display = 'none';
 					selectors.push(element.id);
@@ -73,6 +78,7 @@ export default createFeature(
 			});
 		}
 
+		// Send number of hidden items to the badge
 		if (kwIgnoratorBadge) {
 			sendToBackground({
 				name: 'badge',
