@@ -10,7 +10,7 @@ const storageKey = 'ignorator';
 const stylesId: styleId = `${CSS_PREFIX}ignorator`;
 let ignoratorBadge = false;
 const ignoratedUsers = [];
-const hiddenPosts = [];
+const ignoratedItems = [];
 
 export async function removeUserFromIgnorator(userId: string) {
 	const storage = new Storage();
@@ -60,8 +60,8 @@ async function confirmIgnoratorAddition(e) {
 
 				// Add user's posts to ignorated post count badge
 				const postIds = extractPostIds(document.querySelectorAll(selector));
-				hiddenPosts.push(...postIds);
-				updateBadge(hiddenPosts.length);
+				ignoratedItems.push(...postIds);
+				updateBadge(ignoratedItems.length);
 				ignoratedUsers.push(userId);
 			}
 		}
@@ -92,9 +92,9 @@ function extractPostIds(nodes: NodeList) {
 function updateBadge(count: number) {
 	if (ignoratorBadge) {
 		sendToBackground({
-			name: 'ignoratorBadge',
+			name: 'badge',
 			body: {
-				hiddenPosts: count.toString(),
+				ignoratedItems: count.toString(),
 			},
 		});
 	}
@@ -150,9 +150,9 @@ export default createFeature(
 		if (badgeSelectors.length) {
 			const posts = document.querySelectorAll(badgeSelectors.join(','));
 			const postIds = extractPostIds(posts);
-			hiddenPosts.push(...postIds);
+			ignoratedItems.push(...postIds);
 		}
-		updateBadge(hiddenPosts.length);
+		updateBadge(ignoratedItems.length);
 
 		// Add a link to ignorate a user to all posts
 		const allPosts = document.querySelectorAll('.post');
@@ -165,9 +165,9 @@ export default createFeature(
 
 		// If this post is from an ignorated user, add it to the ignorated user post count badge
 		const postId = addedNode.dataset.post;
-		if (ignoratedUsers.includes(addedNode.dataset.user) && !hiddenPosts.includes(postId)) {
-			hiddenPosts.push(postId);
-			updateBadge(hiddenPosts.length);
+		if (ignoratedUsers.includes(addedNode.dataset.user) && !ignoratedItems.includes(postId)) {
+			ignoratedItems.push(postId);
+			updateBadge(ignoratedItems.length);
 		}
 	},
 );

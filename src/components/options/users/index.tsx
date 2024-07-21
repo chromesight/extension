@@ -79,7 +79,7 @@ export default function UsersOptions() {
 	return (
 		<>
 			<div className={style.group} id="ignorator">
-				<h3 className={style.heading}>Ignorator</h3>
+				<h3 className={style.heading}>User Ignorator</h3>
 				<fieldset className={style.fieldset}>
 					<div className={`${style.group} ${style.small}`}>
 						<p className={style.label}>Ignorated users</p>
@@ -93,7 +93,7 @@ export default function UsersOptions() {
 				<fieldset className={style.fieldset}>
 					<div className={`${style.group} ${style.small}`}>
 						<p className={style.label}>Display ignorated posts badge</p>
-						<p className={style.description}>Show the number of currently hidden topics or posts from ignorated users on the ChromeSight pinned icon</p>
+						<p className={style.description}>Include the number of hidden items from ignorated users on the ChromeSight pinned icon</p>
 					</div>
 					<Switch
 						onChange={(checked: boolean) => setIgnorator({ ...ignorator, badge: checked })}
@@ -105,7 +105,7 @@ export default function UsersOptions() {
 			</div>
 
 			<div className={style.group} id="highlighter">
-				<h3 className={style.heading}>Highlighter</h3>
+				<h3 className={style.heading}>User Highlighter</h3>
 				<fieldset className={style.fieldset}>
 					<div className={`${style.group} ${style.small}`}>
 						<p className={style.label}>Highlighted users</p>
@@ -121,7 +121,7 @@ export default function UsersOptions() {
 			</div>
 
 			<div className={style.group} id="notes">
-				<h3 className={style.heading}>Notes</h3>
+				<h3 className={style.heading}>User Notes</h3>
 				<fieldset className={style.fieldset}>
 					<div className={`${style.group} ${style.small}`}>
 						<p className={style.label}>User notes</p>
