@@ -1,6 +1,6 @@
 import ReactSwitch from 'react-switch';
 
-export default function Switch({ onChange, checked }) {
+export default function Switch({ onChange, checked, disabled = false }) {
 	return (
 		<ReactSwitch
 			uncheckedIcon={false}
@@ -11,6 +11,7 @@ export default function Switch({ onChange, checked }) {
 			handleDiameter={14}
 			onChange={onChange}
 			checked={checked}
+			disabled={disabled}
 		/>
 	);
 }

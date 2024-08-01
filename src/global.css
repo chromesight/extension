@@ -21,14 +21,21 @@ body {
 }
 
 input[type=text],
-select {
+select,
+textarea {
     background: #ffffff;
     border: 1px solid #cfcfcf;
     border-radius: 4px;
+    vertical-align: top;
 }
 
-input[type=text] {
+input[type=text],
+textarea {
     padding: 8px;
+}
+
+textarea {
+    font-family: inherit;
 }
 
 select {
@@ -88,7 +95,8 @@ table td {
     }
 
     input[type=text],
-    select {
+    select,
+    textarea {
         border-color: rgba(255,255,255,.1);
         background-color: #313131;
         color: rgba(255, 255, 255, 0.89)

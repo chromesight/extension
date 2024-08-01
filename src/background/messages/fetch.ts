@@ -4,7 +4,6 @@ const handler: PlasmoMessaging.MessageHandler = async (req, res) => {
 	try {
 		const response = await fetch(req.body.url);
 		const result = await response.json();
-
 		return res.send({
 			...result,
 		});

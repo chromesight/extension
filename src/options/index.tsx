@@ -19,16 +19,22 @@ function IndexOptions() {
 								<a href="#general">General</a>
 							</li>
 							<li>
-								<a href="#topics">Topics</a>
-							</li>
-							<li>
 								<a href="#posts">Posts</a>
 							</li>
 							<li>
-								<a href="#ignorator">Ignorator</a>
+								<a href="#dramalinks">Dramalinks</a>
 							</li>
 							<li>
-								<a href="#highlighter">Highlighter</a>
+								<a href="#keyword-ignorator">Keyword Ignorator</a>
+							</li>
+							<li>
+								<a href="#ignorator">User Ignorator</a>
+							</li>
+							<li>
+								<a href="#highlighter">User Highlighter</a>
+							</li>
+							<li>
+								<a href="#notes">User Notes</a>
 							</li>
 							<li>
 								<hr/>
@@ -39,8 +45,8 @@ function IndexOptions() {
 					<div className={style.content}>
 						<h2 className={style.title}>Settings</h2>
 						<GeneralOptions />
-						<TopicsOptions />
 						<PostsOptions />
+						<TopicsOptions />
 						<UsersOptions />
 						<AboutOptions />
 					</div>

@@ -62,21 +62,27 @@ function createToolbar(target): HTMLElement {
 	const link: HTMLElement = createButton('Link', () => insertText(target, '[Link text](https://example.com) '));
 	const image: HTMLElement = createButton('Image', () => insertText(target, '![Alt text](https://example.com/image.png) '));
 	const spoiler: HTMLElement = createButton('Spoiler', () => {
-		const defaultText = '<spoiler>\n\n</spoiler>';
-		const start = '<spoiler>\n';
+		const start = '<spoiler caption="spoiler">\n';
 		const end = '\n</spoiler>';
+		const defaultText = `${start}${end}`;
+		handleBlockFormatting(target, defaultText, start, end);
+	});
+	const ascii: HTMLElement = createButton('ASCII', () => {
+		const start = '<ascii>\n';
+		const end = '\n</ascii>';
+		const defaultText = `${start}${end}`;
 		handleBlockFormatting(target, defaultText, start, end);
 	});
 	const textBlock: HTMLElement = createButton('Text Block', () => {
-		const defaultText = '\n```\nText Block\n```';
 		const start = '\n```\n';
 		const end = '\n```';
+		const defaultText = `${start}Text Block${end}`;
 		handleBlockFormatting(target, defaultText, start, end);
 	});
 	const codeBlock: HTMLElement = createButton('Code Block', () => {
-		const defaultText = '\n```javascript\nconst foo = bar;\n```';
 		const start = '\n```javascript\n';
 		const end = '\n```';
+		const defaultText = `${start}const foo = bar;${end}`;
 		handleBlockFormatting(target, defaultText, start, end);
 	});
 
@@ -107,6 +113,7 @@ function createToolbar(target): HTMLElement {
 			spoiler,
 			textBlock,
 			codeBlock,
+			ascii,
 		],
 	];
 	const toolbar = document.createElement('div');
@@ -125,32 +132,33 @@ function createToolbar(target): HTMLElement {
 
 function createPostEditToolbars() {
 	const userId = getUserId();
-	const postEditContainers = document.querySelectorAll(`.post[data-user="${userId}"] div[id*="post-edit-"]`);
-	const config = { childList: true };
-	postEditContainers.forEach(element => {
-		const observer = new MutationObserver((mutationList) => {
-			for (const mutation of mutationList) {
-				if (mutation.type === 'childList' && mutation.addedNodes.length) {
-					const postEditContainer = mutation.target as HTMLElement;
-					const postEditForm = postEditContainer.querySelector('form');
-					const postEditTextarea = postEditContainer.querySelector('textarea');
-					const postEditToolbar = createToolbar(postEditTextarea);
-					postEditForm.insertAdjacentElement('afterbegin', postEditToolbar);
-					postEditTextarea.addEventListener('blur', (event) => cursorPosition = (event.target as HTMLTextAreaElement).selectionStart);
+	if (userId) {
+		const postEditContainers = document.querySelectorAll(`.post[data-user="${userId}"] div[id*="post-edit-"]`);
+		const config = { childList: true };
+		postEditContainers.forEach(element => {
+			const observer = new MutationObserver((mutationList) => {
+				for (const mutation of mutationList) {
+					if (mutation.type === 'childList' && mutation.addedNodes.length) {
+						const postEditContainer = mutation.target as HTMLElement;
+						const postEditForm = postEditContainer.querySelector('form');
+						const postEditTextarea = postEditContainer.querySelector('textarea');
+						const postEditToolbar = createToolbar(postEditTextarea);
+						postEditForm.insertAdjacentElement('afterbegin', postEditToolbar);
+						postEditTextarea.addEventListener('blur', (event) => cursorPosition = (event.target as HTMLTextAreaElement).selectionStart);
+					}
 				}
-			}
+			});
+			observer.observe(element, config);
 		});
-		observer.observe(element, config);
-	});
+	}
 }
 
-function createReplyToolbar() {
-	const textarea: HTMLTextAreaElement = document.querySelector('.reply-form-inner textarea');
+function createReplyToolbar(textarea: HTMLTextAreaElement) {
 	textarea.addEventListener('blur', (event) => cursorPosition = (event.target as HTMLTextAreaElement).selectionStart);
 
 	// Add toolbar to reply textareaarea
 	const replyToolbar = createToolbar(textarea);
-	textarea.parentElement.insertAdjacentElement('beforebegin', replyToolbar);
+	textarea.insertAdjacentElement('beforebegin', replyToolbar);
 }
 
 export default createFeature(
@@ -158,15 +166,17 @@ export default createFeature(
 	async () => {
 		logDebugMessage('Feature Enabled: Markdown buttons for reply box');
 
-		// Add toolbar to reply area
-		createReplyToolbar();
+		// Add post create toolbars
+		const textarea: HTMLTextAreaElement = document.querySelector('#reply-content');
+		createReplyToolbar(textarea);
 
-		// Add toolbar to edit post textarea
+		// Add post edit toolbar
 		createPostEditToolbars();
 
 		// Insert toolbar styles
 		const rules = `
 		.${CSS_PREFIX}markdown-toolbar {
+			box-sizing: border-box;
 			display: flex;
 			flex-wrap: wrap;
 			padding: 6px;
@@ -177,10 +187,21 @@ export default createFeature(
 			border-bottom-width: 0;
 			border-style: solid;
 			border-color: rgb(118, 118, 118);
+			width: 100%;
+		}
+		.reply-form-inner .${CSS_PREFIX}markdown-toolbar {
+			width: initial;
 		}
 		.message .${CSS_PREFIX}markdown-toolbar {
-			width: calc(40em - 14px);
 			max-width: 100%;
+		}
+		@media all and (min-width: 768px) {
+			.${CSS_PREFIX}markdown-toolbar {
+				width: ${textarea.offsetWidth}px;
+			}
+			.message .${CSS_PREFIX}markdown-toolbar {
+				width: 40em;
+			}
 		}
 		.${CSS_PREFIX}markdown-buttons {
 			margin-right: 6px;

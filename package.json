@@ -1,7 +1,7 @@
 {
   "name": "chrome-sight",
   "displayName": "ChromeSight",
-  "version": "0.3.2",
+  "version": "1.2.0",
   "description": "Quality of life features for the blue websight.",
   "author": "Joshh",
   "scripts": {
@@ -16,7 +16,7 @@
     "@plasmohq/messaging": "^0.5.0",
     "@plasmohq/storage": "^1.6.1",
     "lodash.debounce": "^4.0.8",
-    "plasmo": "^0.82.1",
+    "plasmo": "^0.88.0",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
@@ -37,6 +37,7 @@
   },
   "manifest": {
     "host_permissions": [
+      "https://websight.blue/*",
       "https://*.websight.blue/*",
       "https://publish.twitter.com/*"
     ]

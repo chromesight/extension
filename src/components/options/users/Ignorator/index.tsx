@@ -4,7 +4,7 @@ import styles from './style.module.css';
 import Button from '~components/ui/Button';
 import { addUserToIgnorator, removeUserFromIgnorator } from '~lib/features/users/ignorator';
 
-function IgnoratedUsers({ users, handleUserState }) {
+function IgnoratedUsers({ users, onChange }) {
 	const userIds = Object.keys(users);
 	if (userIds.length) {
 		const rows = userIds.map(key => {
@@ -16,7 +16,7 @@ function IgnoratedUsers({ users, handleUserState }) {
 							onChange={(checked: boolean) => {
 								const newValue = {};
 								newValue[key] = { ...users[key], hideTopics: checked };
-								handleUserState(newValue);
+								onChange(newValue);
 							}}
 							checked={users[key].hideTopics}
 						/>
@@ -26,9 +26,20 @@ function IgnoratedUsers({ users, handleUserState }) {
 							onChange={(checked: boolean) => {
 								const newValue = {};
 								newValue[key] = { ...users[key], hidePosts: checked };
-								handleUserState(newValue);
+								onChange(newValue);
 							}}
 							checked={users[key].hidePosts}
+						/>
+					</td>
+					<td>
+						<Switch
+							onChange={(checked: boolean) => {
+								const newValue = {};
+								newValue[key] = { ...users[key], hideAvatar: checked };
+								onChange(newValue);
+							}}
+							checked={users[key].hideAvatar || users[key].hidePosts}
+							disabled={users[key].hidePosts}
 						/>
 					</td>
 					<td>
@@ -47,12 +58,12 @@ function IgnoratedUsers({ users, handleUserState }) {
 	}
 	else {
 		return (<tr>
-			<td colSpan={4}><p className={`${pageStyles.description} ${styles['empty-row']}`}>No users currently ignorated ✨</p></td>
+			<td colSpan={5}><p className={`${pageStyles.description} ${styles['empty-row']}`}>No users currently ignorated ✨</p></td>
 		</tr>);
 	}
 }
 
-export default function Ignorator({ settings, handleUserState }) {
+export default function Ignorator({ settings, onChange }) {
 	return (
 		<>
 			<table className={styles.table}>
@@ -61,11 +72,12 @@ export default function Ignorator({ settings, handleUserState }) {
 						<th>User ID</th>
 						<th>Hide Topics</th>
 						<th>Hide Posts</th>
+						<th>Hide Avatar</th>
 						<th>Unignorate</th>
 					</tr>
 				</thead>
 				<tbody>
-					<IgnoratedUsers users={settings.users} handleUserState={handleUserState} />
+					<IgnoratedUsers users={settings.users} onChange={onChange} />
 				</tbody>
 			</table>
 			<form

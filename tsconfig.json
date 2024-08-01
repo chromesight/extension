@@ -4,7 +4,8 @@
   "include": [".plasmo/index.d.ts", "next-env.d.ts", "./**/*.ts", "./**/*.tsx"],
   "compilerOptions": {
     "paths": {
-      "~*": ["./src/*"]
+      "~*": ["./src/*"],
+      "@Assets/*": ["./assets/*"]
     },
     "baseUrl": ".",
     "isolatedModules": true
