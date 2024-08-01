@@ -92,7 +92,7 @@ export default function UsersOptions() {
 				</fieldset>
 				<fieldset className={style.fieldset}>
 					<div className={`${style.group} ${style.small}`}>
-						<p className={style.label}>Display ignorated posts badge</p>
+						<p className={style.label}>Display badge</p>
 						<p className={style.description}>Include the number of hidden items from ignorated users on the ChromeSight pinned icon</p>
 					</div>
 					<Switch

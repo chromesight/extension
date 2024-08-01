@@ -93,7 +93,7 @@ export default function TopicsOptions() {
 				</fieldset>
 				<fieldset className={style.fieldset}>
 					<div className={`${style.group} ${style.small}`}>
-						<p className={style.label}>Display hidden topics badge</p>
+						<p className={style.label}>Display badge</p>
 						<p className={style.description}>Include the number of keyword-hidden topics on the ChromeSight pinned icon</p>
 					</div>
 					<Switch

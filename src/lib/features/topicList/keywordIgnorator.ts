@@ -5,7 +5,7 @@ import type { KeywordIgnoratorSettings } from '~components/options/topics';
 import { sendToBackground } from '@plasmohq/messaging';
 
 const storageKey = 'keywordIgnorator';
-let kwIgnoratorBadge = false;
+let badgeEnabled = false;
 
 export async function removeKeyword(keyword: string) {
 	const storage = new Storage();
@@ -32,7 +32,7 @@ export default createFeature(
 
 		const storage = new Storage();
 		const { keywords, badge }:KeywordIgnoratorSettings = await storage.get(storageKey);
-		kwIgnoratorBadge = badge;
+		badgeEnabled = badge;
 		const keys = Object.keys(keywords);
 		const topicKeywords = keys.filter(keyword => keywords[keyword].hideTopics);
 		const topicPattern = new RegExp(topicKeywords.join('|'));
@@ -79,7 +79,7 @@ export default createFeature(
 		}
 
 		// Send number of hidden items to the badge
-		if (kwIgnoratorBadge) {
+		if (badgeEnabled) {
 			sendToBackground({
 				name: 'badge',
 				body: {
