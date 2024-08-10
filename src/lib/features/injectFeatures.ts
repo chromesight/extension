@@ -3,6 +3,8 @@ import { Storage } from '@plasmohq/storage';
 import type { Feature, FeatureSettings } from './feature';
 import { CSS_PREFIX } from '~constants';
 
+const pageFeatures = [];
+
 // Execute features when the browser is ready
 export default async function injectFeatures(featureList: Array<Feature>) {
 	executeFeatures(featureList);
@@ -12,17 +14,19 @@ export default async function injectFeatures(featureList: Array<Feature>) {
 function executeFeatures(features: Array<Feature>) {
 	if (features.length) {
 		logDebugMessage('Injecting features into the page');
+		pageFeatures.push(...features);
 
+		// Execute feature on page load.
 		for (const feature of features) {
 			executeFeature(feature);
+		}
 
-			// Add feature executions for when a new post is added to the page
-			const postsContainer = document.querySelector('#messages');
-			if (postsContainer) {
-				const newPostObserver = new MutationObserver((mutations) => handleNewPost(mutations, features));
-				const observerConfig = { childList: true };
-				newPostObserver.observe(postsContainer, observerConfig);
-			}
+		// Setup feature executions for when a new post is added to the page.
+		const postsContainer = document.querySelector('#messages');
+		if (postsContainer) {
+			const newPostObserver = new MutationObserver((mutations) => handleNewPost(mutations, pageFeatures));
+			const observerConfig = { childList: true };
+			newPostObserver.observe(postsContainer, observerConfig);
 		}
 	}
 }
@@ -32,13 +36,15 @@ async function executeFeature(feature: Feature, isMutationExecution = false, nod
 	try {
 		const { enabled } = await getFeatureSettings(feature.settingsKey);
 
-		if (enabled) {
-			if (!isMutationExecution) {
-				feature.execute();
-			}
-			else if (isMutationExecution && feature.executeOnNewPost !== undefined) {
-				feature.executeOnNewPost(node as HTMLElement);
-			}
+		if (!enabled) {
+			return false;
+		}
+
+		if (!isMutationExecution) {
+			feature.execute();
+		}
+		else if (isMutationExecution && feature.executeOnNewPost !== undefined) {
+			feature.executeOnNewPost(node as HTMLElement);
 		}
 	}
 	catch (error) {
