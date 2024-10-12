@@ -40,11 +40,11 @@ export default createFeature(
 		logDebugMessage('Feature Enabled: Resizable images');
 
 		const rules = `
-		.message img {
+		.message-contents img:not(.twemoji) {
 			min-width: 42px;
 			transform-origin: top left;
 		}
-		.message img.${CSS_PREFIX}resizing:active {
+		.message-contents img.${CSS_PREFIX}resizing:active {
 			cursor: nwse-resize;
 		}`;
 		insertStyles(`${CSS_PREFIX}resizable-images`, rules);
