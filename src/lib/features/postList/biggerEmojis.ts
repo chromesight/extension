@@ -16,13 +16,20 @@ export default createFeature(
 	async () => {
 		logDebugMessage('Feature Enabled: Bigger emojis');
 
+		const scale = 2;
+		const percentage = scale * 100;
+		const trackSizing = scale >= 1.5 ? '5rem' : '4rem';
 		const rules = `
-			.message .emoji-box { display: inline-block; }
-			.message span.emoji-text { font-size: 185%; }
-			.message-contents { margin-bottom: 30px }
-			.message-contents span.${className} { font-size: 185%; }
-			.message-contents blockquote span.${className} { font-size: 140%; }
-			.emoji-bar > span[id*="emojis-"] { display: inline-block; }
+			.message .emoji-box,
+			.message .emoji-bar > span[id*="emojis-"] { display: inline-block; }
+			.message .emoji-bar { bottom: 2px; right: 3px; }
+			.message .emoji-bar a,
+			.emoji-picker > *,
+			.message-contents span.${className} { font-size: ${percentage}%; }
+			.message-contents blockquote span.${className} { font-size: ${percentage * 0.75}%; }
+			.message-contents:not(.preview) { margin-bottom: 30px }
+			.message span.emoji-text { font-size: inherit; }
+			.emoji-picker { grid-template-columns: repeat(4, ${trackSizing}); }
 		`;
 		insertStyles(`${CSS_PREFIX}bigger-emojis`, rules);
 
