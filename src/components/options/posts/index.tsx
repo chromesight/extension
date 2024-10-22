@@ -17,6 +17,7 @@ export type ResizableImagesSettings = {
 }
 
 export default function PostsOptions() {
+	const [biggerEmojis, setBiggerEmojis] = useStorage<FeatureSettings>('biggerEmojis', defaultSettings);
 	const [postNumbers, setPostNumbers] = useStorage<FeatureSettings>('postNumbers', defaultSettings);
 	const [filterMe, setFilterMe] = useStorage<FeatureSettings>('filterMe', defaultSettings);
 	const [markTopicCreator, setMarkTopicCreator] = useStorage<FeatureSettings>('markTopicCreator', defaultSettings);
@@ -31,6 +32,17 @@ export default function PostsOptions() {
 	return (
 		<div className={style.group} id="posts">
 			<h3 className={style.heading}>Posts</h3>
+
+			<fieldset className={style.fieldset}>
+				<div className={`${style.group} ${style.small}`}>
+					<p className={style.label}>Bigger emojis</p>
+					<p className={style.description}>Increase the size of emojis in posts</p>
+				</div>
+				<Switch
+					onChange={(checked: boolean) => setBiggerEmojis({ ...biggerEmojis, enabled: checked })}
+					checked={biggerEmojis.enabled}
+				/>
+			</fieldset>
 
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>

@@ -4,6 +4,7 @@ import ignorator from '../users/ignorator';
 import notes from '../users/notes';
 import autoRedirect from './autoRedirect';
 import autoScroll from './autoScroll';
+import biggerEmojis from './biggerEmojis';
 import embedTwitter from './embedTwitter';
 import filterMe from './filterMe';
 import hideReplyArea from './hideReplyArea';
@@ -27,6 +28,7 @@ const features: Feature[] = [
 	markdownButtons,
 	hideReplyArea,
 	resizableImages,
+	biggerEmojis,
 ];
 
 export default features;
