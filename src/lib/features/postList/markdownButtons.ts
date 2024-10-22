@@ -189,6 +189,9 @@ export default createFeature(
 			border-color: rgb(118, 118, 118);
 			width: 100%;
 		}
+		textarea[name=message] {
+			box-sizing: border-box;
+		}
 		.reply-form-inner .${CSS_PREFIX}markdown-toolbar {
 			width: initial;
 		}
