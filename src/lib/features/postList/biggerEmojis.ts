@@ -4,6 +4,7 @@ import insertStyles from '~lib/insertStyles';
 import { CSS_PREFIX } from '~constants';
 
 const className = `${CSS_PREFIX}emoji-wrap`;
+const selector = '.message-contents > p:not(:has(.twemoji)), .message-contents blockquote p:not(:first-child):not(:has(.twemoji))';
 
 const wrapEmojis = (element: HTMLElement) => {
 	const pattern = /<a?:.+?:\d{18}>|\p{Extended_Pictographic}/gu;
@@ -30,13 +31,18 @@ export default createFeature(
 			.message-contents:not(.preview) { margin-bottom: 30px }
 			.message span.emoji-text { font-size: inherit; }
 			.emoji-picker { grid-template-columns: repeat(4, ${trackSizing}); }
+			.message .twemoji {
+				width: ${scale + 0.15}em;
+				height: ${scale + 0.15}em;
+			}
 		`;
 		insertStyles(`${CSS_PREFIX}bigger-emojis`, rules);
 
-		const messages = document.querySelectorAll('.message-contents > p, .message-contents blockquote p:not(:first-child)');
+		const messages = document.querySelectorAll(selector);
 		messages.forEach(wrapEmojis);
 	},
 	async (addedNode) => {
-		wrapEmojis(addedNode);
+		const messages = addedNode.querySelectorAll(selector);
+		messages.forEach(wrapEmojis);
 	},
 );

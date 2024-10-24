@@ -18,7 +18,7 @@ function replaceElements(elements: NodeListOf<HTMLElement>) {
 
 		// Create a link to the hidden element and appen
 		const link = document.createElement('a');
-		link.innerText = `[${element.tagName === 'IMG' ? 'image' : 'video'}: ${filename}]`;
+		link.innerText = `[${element.tagName === 'IMG' ? `image: ${element.getAttribute('alt')}` : `video: ${filename}`}]`;
 		link.href = src;
 		link.target = '_blank';
 		element.insertAdjacentElement('afterend', link);
@@ -30,7 +30,7 @@ export default createFeature(
 	async () => {
 		const tags = document.querySelector('#tag-editor-container .danger[href*="nws"],#tag-editor-container .danger[href*="nls"]');
 		if (tags) {
-			const selector = '.post .message-contents img, .post .message-contents video';
+			const selector = '.post .message-contents img:not(.twemoji), .post .message-contents video';
 
 			// We're in a NWS or NLS topic
 			const rules = `${selector} { display: none }`;
