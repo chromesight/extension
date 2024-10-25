@@ -5,6 +5,11 @@ import style from '../style.module.css';
 
 const defaultSettings = v => v === undefined ? { enabled: false } : v;
 
+export type BiggerEmojiSettings = {
+	enabled: boolean;
+	scale: string;
+}
+
 export type EmbedTwitterSettings = {
 	enabled: boolean;
 	theme: string;
@@ -17,7 +22,7 @@ export type ResizableImagesSettings = {
 }
 
 export default function PostsOptions() {
-	const [biggerEmojis, setBiggerEmojis] = useStorage<FeatureSettings>('biggerEmojis', defaultSettings);
+	const [biggerEmojis, setBiggerEmojis] = useStorage<BiggerEmojiSettings>('biggerEmojis', v => v === undefined ? { enabled: false, scale: '1.0' } : v);
 	const [postNumbers, setPostNumbers] = useStorage<FeatureSettings>('postNumbers', defaultSettings);
 	const [filterMe, setFilterMe] = useStorage<FeatureSettings>('filterMe', defaultSettings);
 	const [markTopicCreator, setMarkTopicCreator] = useStorage<FeatureSettings>('markTopicCreator', defaultSettings);
@@ -28,6 +33,7 @@ export default function PostsOptions() {
 	const [markdownButtons, setMarkdownButtons] = useStorage<FeatureSettings>('markdownButtons', defaultSettings);
 	const [hideReplyArea, setHideReplyArea] = useStorage<FeatureSettings>('hideReplyArea', defaultSettings);
 	const [resizableImages, setResizableImages] = useStorage<FeatureSettings>('resizableImages', defaultSettings);
+	console.log(biggerEmojis);
 
 	return (
 		<div className={style.group} id="posts">
@@ -46,7 +52,33 @@ export default function PostsOptions() {
 
 			<fieldset className={style.fieldset}>
 				<div className={`${style.group} ${style.small}`}>
+					<p className={style.label}>Scale</p>
+				</div>
+				<input
+					required
+					type="number"
+					min="0.1"
+					max="2.0"
+					step="0.1"
+					maxLength={3}
+					value={biggerEmojis.scale}
+					onChange={event => {
+						const value: number = parseFloat(event.target.value);
+						if (value > 0 && value <= 2 && event.target.value !== biggerEmojis.scale) {
+							console.log(value);
+							setBiggerEmojis({
+								...biggerEmojis,
+								scale: value.toFixed(1),
+							});
+						}
+					}}
+				/>
+			</fieldset>
+
+			<fieldset className={style.fieldset}>
+				<div className={`${style.group} ${style.small}`}>
 					<p className={style.label}>Display post numbers</p>
+					<p className={style.description}>Show the post index number in the post header</p>
 				</div>
 				<Switch
 					onChange={(checked: boolean) => setPostNumbers({ ...postNumbers, enabled: checked })}
