@@ -9,8 +9,11 @@ const resizedClassName = `${CSS_PREFIX}resized`;
 function handleImages(images: NodeList): void {
 	images.forEach((image: HTMLImageElement) => {
 		if (!image.parentElement.classList.contains('embed-link') && !image.classList.contains('shrunk')) {
+
 			image.addEventListener('mousedown', event => {
 				event.preventDefault();
+				image.style.width = `${image.getBoundingClientRect().width}px`;
+				image.style.maxHeight = 'none';
 
 				image.classList.add(resizingClassName);
 				image.classList.add(resizedClassName);
