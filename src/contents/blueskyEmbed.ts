@@ -12,10 +12,8 @@ window.addEventListener('message', (event) => {
 	}
 
 	if (event.data.type && (event.data.type === 'load_bsky_widget')) { 
-		console.log(event.data);
 		if (window.bluesky.scan) {
 			const addedNode = document.getElementById(event.data.id);
-			console.log(addedNode);
 			window.bluesky.scan(addedNode);
 		}
 	}
