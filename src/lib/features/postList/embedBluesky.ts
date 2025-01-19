@@ -40,30 +40,28 @@ async function fetchEmbed(postUrl: string): Promise<BlueskyEmbedResponse | null>
 }
 
 async function insertEmbeds(links: NodeListOf<HTMLAnchorElement>) {
-	[...links].forEach(async link => {
-		const embed = await fetchEmbed(link.href);
+	const blueskyLinks = [...links];
+	
+	// Fetch all embeds simultaneously
+	const embedPromises = blueskyLinks.map(link => 
+		fetchEmbed(link.href)
+			.then(embed => ({ link, embed }))
+	);
+	
+	const results = await Promise.all(embedPromises);
+	
+	results.forEach(({ link, embed }) => {
 		if (embed?.html) {
-			requestAnimationFrame(() => {
-				const embedDiv = document.createElement('div');
-				embedDiv.classList.add(`${CSS_PREFIX}bluesky-embed`);
-				
-				// Remove the script tag from the HTML since we'll load it separately
-				const htmlWithoutScript = embed.html.replace(/<script.*?<\/script>/s, '');
-				embedDiv.innerHTML = htmlWithoutScript;
-				
-				
-				// Hacky way of waiting for oembed markup to be added before firing message to main world to load twitter widget from markup. Execution of requestAnimationFrame occurs before next repaint.  Nesting another requestAnimationFrame will fire it's callback  after next repaint (because it waits for the animation frame after the one we're waiting for to paint)
-				// Source: https://macarthur.me/posts/when-dom-updates-appear-to-be-asynchronous#option-2-fire-after-next-repaint
-				requestAnimationFrame(() => {
-					// Fires _before_ next repaint.
-					link.insertAdjacentHTML('afterend', embed.html);
+			// Remove the script tag from the HTML since we'll load it separately
+			const htmlWithoutScript = embed.html.replace(/<script.*?<\/script>/s, '');
 
-					// Wait for the markup to be inserted and rendered to the DOM before loading the wi dget. We do this to ensure the Twitter Widget script in the MAIN world can sometimes fire before the markup is rendered to the screen. Sending a postMessage after inserting markup causes the event to fire in the correct order after insertion.
-					requestAnimationFrame(() => {
-						// Fires _after next repaint.
-						// The message listener is in contents/blueskyEmbed.ts
-						window.postMessage({ type: 'load_bsky_widget', id: link.closest('.message').id });
-					});
+			requestAnimationFrame(() => {
+				// Fires _before_ next repaint.
+				link.insertAdjacentHTML('afterend', htmlWithoutScript);
+
+				requestAnimationFrame(() => {
+					// Fires _after next repaint.
+					window.postMessage({ type: 'load_bsky_widget', id: link.closest('.message').id });
 				});
 			});
 		}

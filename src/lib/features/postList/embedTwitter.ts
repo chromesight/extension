@@ -19,7 +19,7 @@ async function fetchEmbed(url: string): Promise<TwitterEmbedResponse | null> {
 	const response = await sendToBackground({
 		name: 'fetch',
 		body: {
-			url: `https://publish.twitter.com/oembed?url=${url}&theme=${theme}&omit_script=true`,
+			url: `https://publish.twitter.com/oembed?url=${url}&theme=${theme}&omit_script=false`,
 		},
 	});
 
@@ -32,26 +32,21 @@ async function fetchEmbed(url: string): Promise<TwitterEmbedResponse | null> {
 }
 
 async function insertEmbeds(links: NodeListOf<HTMLAnchorElement>) {
-	[...links]
-		.filter(link => link.href.includes('/status/'))
-		.forEach(async link => {
-			const embed = await fetchEmbed(link.href.replace('x.com', 'twitter.com'));
-			if (embed) {
-				// Hacky way of waiting for oembed markup to be added before firing message to main world to load twitter widget from markup. Execution of requestAnimationFrame occurs before next repaint.  Nesting another requestAnimationFrame will fire it's callback  after next repaint (because it waits for the animation frame after the one we're waiting for to paint)
-				// Source: https://macarthur.me/posts/when-dom-updates-appear-to-be-asynchronous#option-2-fire-after-next-repaint
-				requestAnimationFrame(() => {
-					// Fires _before_ next repaint.
-					link.insertAdjacentHTML('afterend', embed.html);
-
-					// Wait for the markup to be inserted and rendered to the DOM before loading the wi dget. We do this to ensure the Twitter Widget script in the MAIN world can sometimes fire before the markup is rendered to the screen. Sending a postMessage after inserting markup causes the event to fire in the correct order after insertion.
-					requestAnimationFrame(() => {
-						// Fires _after next repaint.
-						// The message listener is in contents/twitterEmbed.ts
-						window.postMessage({ type: 'load_twitter_widget', id: link.closest('.message').id });
-					});
-				});
-			}
-		});
+	const twitterLinks = [...links].filter(link => link.href.includes('/status/'));
+	
+	// Fetch all embeds simultaneously
+	const embedPromises = twitterLinks.map(link => 
+		fetchEmbed(link.href.replace('x.com', 'twitter.com'))
+			.then(embed => ({ link, embed }))
+	);
+	
+	const results = await Promise.all(embedPromises);
+	
+	results.forEach(({ link, embed }) => {
+		if (embed) {
+			link.insertAdjacentHTML('afterend', embed.html);
+		}
+	});
 }
 
 export default createFeature(
