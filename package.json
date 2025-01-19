@@ -39,7 +39,8 @@
     "host_permissions": [
       "https://websight.blue/*",
       "https://*.websight.blue/*",
-      "https://publish.twitter.com/*"
+      "https://publish.twitter.com/*",
+      "https://embed.bsky.app/*"
     ]
   }
 }

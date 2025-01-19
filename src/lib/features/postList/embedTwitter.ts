@@ -9,13 +9,25 @@ import { CSS_PREFIX } from '~constants';
 
 let theme = 'dark';
 
-async function fetchEmbed(url) {
+interface TwitterEmbedResponse {
+	error?: string;
+	success?: boolean;
+	html?: string;
+}
+
+async function fetchEmbed(url: string): Promise<TwitterEmbedResponse | null> {
 	const response = await sendToBackground({
 		name: 'fetch',
 		body: {
 			url: `https://publish.twitter.com/oembed?url=${url}&theme=${theme}&omit_script=true`,
 		},
 	});
+
+	if (response.success === false) {
+		console.error('Error fetching Twitter embed:', response?.error);
+		return null;
+	}
+
 	return response;
 }
 

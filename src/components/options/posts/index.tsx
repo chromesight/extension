@@ -24,6 +24,7 @@ export default function PostsOptions() {
 	const [autoRedirect, setAutoRedirect] = useStorage<FeatureSettings>('autoRedirect', defaultSettings);
 	const [nwsTopicImages, setNwsTopicImages] = useStorage<FeatureSettings>('nwsTopicImages', defaultSettings);
 	const [embedTwitter, setEmbedTwitter] = useStorage<EmbedTwitterSettings>('embedTwitter', v => v === undefined ? { enabled: false, theme: 'dark' } : v);
+	const [embedBluesky, setEmbedBluesky] = useStorage<FeatureSettings>('embedBluesky', defaultSettings);
 	const [markdownButtons, setMarkdownButtons] = useStorage<FeatureSettings>('markdownButtons', defaultSettings);
 	const [hideReplyArea, setHideReplyArea] = useStorage<FeatureSettings>('hideReplyArea', defaultSettings);
 	const [resizableImages, setResizableImages] = useStorage<FeatureSettings>('resizableImages', defaultSettings);
@@ -128,6 +129,16 @@ export default function PostsOptions() {
 				<Switch
 					onChange={(checked: boolean) => setNwsTopicImages({ ...nwsTopicImages, enabled: checked })}
 					checked={nwsTopicImages.enabled}
+				/>
+			</fieldset>
+
+			<fieldset className={style.fieldset}>
+				<div className={`${style.group} ${style.small}`}>
+					<p className={style.label}>Embed Bluesky links</p>
+				</div>
+				<Switch
+					onChange={(checked: boolean) => setEmbedBluesky({ ...embedBluesky, enabled: checked })}
+					checked={embedBluesky.enabled}
 				/>
 			</fieldset>
 

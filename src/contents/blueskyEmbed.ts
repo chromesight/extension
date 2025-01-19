@@ -11,13 +11,12 @@ window.addEventListener('message', (event) => {
 		return;
 	}
 
-	if (event.data.type && (event.data.type === 'load_twitter_widget')) {
-		const addedNode = document.getElementById(event.data.id);
-		if (window.twttr.init) {
-			window.twttr.widgets.load(addedNode);
-		}
-		else {
-			window.twttr.ready(twttr => twttr.widgets.load(addedNode));
+	if (event.data.type && (event.data.type === 'load_bsky_widget')) { 
+		console.log(event.data);
+		if (window.bluesky.scan) {
+			const addedNode = document.getElementById(event.data.id);
+			console.log(addedNode);
+			window.bluesky.scan(addedNode);
 		}
 	}
 });
