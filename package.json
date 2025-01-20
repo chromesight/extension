@@ -5,8 +5,10 @@
   "description": "Quality of life features for the blue websight.",
   "author": "Joshh",
   "scripts": {
+    "fetch-embeds": "tsx scripts/fetch-embeds.ts",
     "start": "npm run dev",
-    "dev": "plasmo dev --verbose",
+    "dev": "npm run prebuild && plasmo dev --verbose",
+    "prebuild": "npm run fetch-embeds",
     "build": "plasmo build",
     "eslint": "eslint --ext .tsx,.ts src",
     "eslint:fix": "eslint --ext .tsx,.ts --fix src",
@@ -33,7 +35,8 @@
     "@typescript-eslint/parser": "^5.60.1",
     "eslint": "^8.43.0",
     "prettier": "^2.8.8",
-    "typescript": "^5.1.3"
+    "typescript": "^5.1.3",
+    "tsx": "^4.7.0"
   },
   "manifest": {
     "host_permissions": [
