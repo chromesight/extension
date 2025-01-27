@@ -27,9 +27,6 @@ async function fetchEmbed(url: string, filename: string) {
 async function main() {
   // Fetch Bluesky embed script
   await fetchEmbed('https://embed.bsky.app/embed.js', 'bluesky/embed.js');
-  
-  // Fetch Twitter embed script
-  await fetchEmbed('https://platform.twitter.com/widgets.js', 'twitter/widgets.js');
 }
 
 main(); 

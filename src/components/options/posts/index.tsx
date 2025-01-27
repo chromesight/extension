@@ -23,7 +23,6 @@ export default function PostsOptions() {
 	const [autoScroll, setAutoScroll] = useStorage<FeatureSettings>('autoScroll', defaultSettings);
 	const [autoRedirect, setAutoRedirect] = useStorage<FeatureSettings>('autoRedirect', defaultSettings);
 	const [nwsTopicImages, setNwsTopicImages] = useStorage<FeatureSettings>('nwsTopicImages', defaultSettings);
-	const [embedTwitter, setEmbedTwitter] = useStorage<EmbedTwitterSettings>('embedTwitter', v => v === undefined ? { enabled: false, theme: 'dark' } : v);
 	const [embedBluesky, setEmbedBluesky] = useStorage<FeatureSettings>('embedBluesky', defaultSettings);
 	const [markdownButtons, setMarkdownButtons] = useStorage<FeatureSettings>('markdownButtons', defaultSettings);
 	const [hideReplyArea, setHideReplyArea] = useStorage<FeatureSettings>('hideReplyArea', defaultSettings);
@@ -140,29 +139,6 @@ export default function PostsOptions() {
 					onChange={(checked: boolean) => setEmbedBluesky({ ...embedBluesky, enabled: checked })}
 					checked={embedBluesky.enabled}
 				/>
-			</fieldset>
-
-			<fieldset className={style.fieldset}>
-				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Embed X/Twitter links</p>
-				</div>
-				<Switch
-					onChange={(checked: boolean) => setEmbedTwitter({ ...embedTwitter, enabled: checked })}
-					checked={embedTwitter.enabled}
-				/>
-			</fieldset>
-
-			<fieldset className={style.fieldset} style={{ marginLeft: 28 }}>
-				<div className={`${style.group} ${style.small}`}>
-					<p className={style.label}>Theme</p>
-				</div>
-				<select
-					value={embedTwitter.theme}
-					onChange={e => setEmbedTwitter({ ...embedTwitter, theme: e.target.value })}
-				>
-					<option value="dark">Dark</option>
-					<option value="light">Light</option>
-				</select>
 			</fieldset>
 
 		</div>
